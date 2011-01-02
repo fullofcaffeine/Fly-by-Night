@@ -38,12 +38,26 @@ This project is at this moment primarily for me to create sites that i want to m
 + environments (atmospheres)
 + routes
 + tight integration with haXe -> swf target
++ migrations?
++ schema (xml?)
++ controller filters
++ view helpers
++ model callbacks
++ model namespaces
++ logger
++ controller error handling
++ model error handling
++ view error handling
++ deep tracer for debugging
++ yaml support !
 
 ## Engine Classes
 
 + AeroModel
 + AeroView
 + AeroController
++ AeroHelper
++ AeroLogger
 
 ## Actually built so far
 

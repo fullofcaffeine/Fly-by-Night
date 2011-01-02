@@ -1,0 +1,10 @@
+# FLy by Night build file 
+-cp engine
+-cp app
+-cp plugins
+
+-php deploy
+-main engine.Takeoff
+
+# atmospheres  development | test | production
+-D development
