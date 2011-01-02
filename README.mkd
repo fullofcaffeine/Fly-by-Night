@@ -1,0 +1,50 @@
+# Fly By Night
+
+### a RoR inspired haXe framework targetting PHP
+
+## looking for an MVC framework in PHP ?
+
++ [CodeIgniter](http://codeigniter.com)
++ [CakePHP](http://cakephp.org)
++ [Symfony](http://www.symfony-project.org)
+
+## looking for a web framework in haXe ?
+
++ [haXigniter](http://haxigniter.com) [github.com/ciscoheat/haxigniter](https://github.com/ciscoheat/haxigniter)
++ [poko](http://blog.touchmypixel.com/poko-project)
++ [hails](http://code.google.com/p/hails)
+
+## MVC is probably not for you!
+
+If you want something like RoR, try [Rails 3](http://rubyonrails.org/)!  
+It's awesome and simple to learn
+
+i made "Fly by Night" for me to use (at least for now)  
+and have not factored in you, at all.
+
+This project is at this moment primarily for me to create sites that i want to make, how i want to make them. I like Rails and have been using it for a long time and am far from an expert, i make no claim to understanding the inner workings and theory of frameworks. Ruby is a great language, i am in love with haXe and this project is an experiment to see how haXe would look like on rails.
+
+# Goals and Features
+
++ ORM that resembles ActiveRecord, just enough for it to work (or [haxORMap](http://deCube.net/haxormap)?)
++ db choices: MySQL sqlite3
++ RESTful resources
++ nested RESTful resources
++ templo? 
++ haml !
++ sass? (i like CSS better)
++ uploader
++ bdd specs (or [munit](https://github.com/massiveinteractive/MassiveUnit)?)
++ environments (atmospheres)
++ routes
++ tight integration with haXe -> swf target
+
+## Engine Classes
+
++ AeroModel
++ AeroView
++ AeroController
+
+## Actually built so far
+
++ nothing yet
