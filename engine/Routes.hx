@@ -1,0 +1,77 @@
+import yaml_crate.YamlHX;
+import haxe.xml.Fast;
+class Routes
+{
+
+
+	public static function resolve( path:String, ?_method:HTTPVerb, ?params:Hash<String> ):Void
+	{
+		var method = (_method == null)? HTTPVerb.GET : _method;
+		// remove trailing slash
+		if(StringTools.endsWith(path,"/")) path = path.substr(0,path.length-1);
+		
+		// check routing table
+		// read routes yaml config
+		// cache it (production) ??
+		// resolve path
+
+    var routes_yml = YamlHX.read(php.io.File.getContent(Settings.get("FBN_ROOT")+'config/routes.yml'));
+    if(path == "/" && 
+      try{ (routes_yml.get("root").length > 0); }catch(e:Dynamic){ false; } ){
+        dispatch(new Route("root", "", path, routes_yml.get("root"),"index",_method,params));
+    }else{
+      // find route
+      var route:Route = null;
+      
+      for (e in routes_yml.elements ){
+        if(e.name == "map"){
+          if(pathMatchesRoute(path.split("/"),e.node.path.innerData.split("/"))){
+            route = mapToRoute(e, path);
+            break;
+          }
+          
+        }
+        
+      }
+      
+      // else use default
+      if(route == null){
+        //route = routes_yml.node.default_route.innerData;
+      }
+      
+      dispatch(route);
+      
+    }
+	}
+	
+	private static function pathMatchesRoute( request_uri_segments:Array<String>, path_segments:Array<String> ):Bool
+	{
+	  // var r : EReg = ~/[:(a-zA-Z0-9_)+]/;
+	  for(i in 0...request_uri_segments.length){
+	    if(!StringTools.startsWith(path_segments[i], ":")){
+	      if(path_segments[i] != request_uri_segments[i]){
+	        return false;
+	      }
+	    }
+	  }
+	  return true;
+	}
+	
+	private static inline function mapToRoute( f:Fast, request_uri:String ):Route
+	{
+    return new Route( f.node.name.innerData, f.node.path.innerData, request_uri, f.node.controller.innerData, f.node.action.innerData, Reflect.field(HTTPVerb, f.node.via.innerData));
+	}
+
+	public static function dispatch_rest( resource:String ):Void
+	{
+/*    dispatch(new RestfulRoute(resource));*/
+	}
+	public static function dispatch(route:Route):Void
+	{
+	  Reflect.callMethod(
+	    Type.resolveClass("controllers."+route.controller),
+	    Reflect.field(Type.resolveClass("controllers."+route.controller),route.action),
+	    [route.params]);
+	}
+	
+}

@@ -1,10 +1,14 @@
 # FLy by Night build file 
 -cp engine
 -cp app
--cp plugins
+-cp cargo
+
 
 -php deploy
--main engine.Takeoff
+-main Takeoff
 
 # atmospheres  development | test | production
 -D development
+
+# debugs  profile | stacktrace
+# -D not implemented yet

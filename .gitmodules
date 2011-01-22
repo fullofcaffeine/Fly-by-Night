@@ -1,0 +1,6 @@
+[submodule "cargo/haml_crate"]
+	path = cargo/haml_crate
+	url = git@github.com:theRemix/haml_crate.git
+[submodule "cargo/yaml_crate"]
+	path = cargo/yaml_crate
+	url = git@github.com:theRemix/yaml_crate.git
