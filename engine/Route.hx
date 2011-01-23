@@ -11,7 +11,7 @@ class Route
 	{
 		this.name = name;
 		this.path = if(StringTools.startsWith(path, "/")) path.substr(1) else path;
-		this.request_uri = if(StringTools.startsWith(request_uri, "/")) request_uri.substr(1) else request_uri;
+		this.request_uri = request_uri;
 		this.controller = controller;
 		this.action = action;
 		this.via = via;

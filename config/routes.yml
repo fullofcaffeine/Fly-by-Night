@@ -1,16 +1,5 @@
 # yaml config for route mapping
 
 root: Landing
-map:
-  name: posts
-  path: /posts
-  controller: Posts
-  action: index
-  via: GET
-map:
-  name: posts
-  path: /posts/:id
-  controller: Posts
-  action: show
-  via: GET
+rest: Posts
 default_route: :controller/:action/:id

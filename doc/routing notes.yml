@@ -15,48 +15,58 @@ admin:
 # GET /foo5/
 map: 
   name: foo5s
-  path: foo5s
+  path: foo5
   controller: foo5
   action: index
+  via: GET
+  
 # GET /foo5/:id
 map: 
   name: foo5
   path: foo5/:id
   controller: foo5
   action: show
+  via: GET
+  
 # GET /foo5/new GET
 map: 
   name: new_foo5
   path: foo5/new
   controller: foo5
   action: new
+  via: GET
+  
 # POST /foo5 
 map: 
   name: create_foo5
   path: foo5
   controller: foo5
   action: create
-  via: post
+  via: POST
+  
 # GET /foo5/:id/edit
 map:
   name: edit_foo5
   path: foo5/:id/edit
   controller: foo5
   action: edit
+  via: GET
+  
 # PUT /foo5/:id
 map:
   name: update_foo5
   path: foo5/:id
   controller: foo5
   action: update
-  via: put
+  via: PUT
+  
 # DELETE /foo5/:id
 map:
   name: destroy_foo5
   path: foo5/:id
   controller: foo5
   action: destroy
-  via: delete
+  via: DELETE
 
 # resources :photos
 #
