@@ -1,10 +1,10 @@
 package controllers;
 import AeroController;
-class Landing extends AeroController
+class Landing extends controllers.Application
 {
-	public static function index( ):Void
+	public function index( ):Void
 	{
-    php.Lib.print('Hello ' + 'LANDING PAGE' + '!');
+    
 
 	}
 	

@@ -1,5 +1,5 @@
 package helpers;
-class LandingHelper extends AeroHelper
+class Landing extends AeroHelper
 {
 
 }

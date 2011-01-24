@@ -1,14 +1,13 @@
 package controllers;
 import AeroController;
-class Posts extends AeroController
+class Posts extends controllers.Application
 {
-	public static function index( ):Void
+	public function index( ):Void
 	{
-    php.Lib.print('Hello ' + 'Posts INDEX' + '!');
-
+    content.set("content", "Hello Posts INDEX");
 	}
-	public static function show( params:Hash<String> ):Void
+	public function show( params:Hash<String> ):Void
 	{
-	  php.Lib.print('Hello ' + 'SHOW Posts ' + params.get("id") + '!');
+	  content.set("content", "Hello Posts SHOW "+params.get("id"));
 	}
 }
