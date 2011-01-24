@@ -1,10 +1,11 @@
 import yaml_crate.YamlHX;
 import haxe.xml.Fast;
+import php.io.File;
 class Routes
 {
 
 
-	public static function resolve( path:String, ?_method:HTTPVerb, ?params:Hash<String> ):Void
+	public static function resolve( path:String, ?_method:HTTPVerb, ?params:Hash<String> ):AeroController
 	{
 		var method = (_method == null)? HTTPVerb.GET : _method;
 		// remove leading and trailing slash
@@ -15,15 +16,16 @@ class Routes
 		// read routes yaml config
 		// cache it (production) ??
 		// resolve path
+		
+		var route:Route = null;
 
-    var routes_yml = YamlHX.read(php.io.File.getContent(Settings.get("FBN_ROOT")+'config/routes.yml'));
+    var routes_yml = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+'config/routes.yml'));
     if(path == "" && 
       try{ (routes_yml.get("root").length > 0); }catch(e:Dynamic){ false; } ){
-        dispatch(new Route("root", "", path, routes_yml.get("root"),"index",_method,params));
+        route = new Route("root", "", path, routes_yml.get("root"),"index",_method,params);
+        return dispatch(route);
     }else{
       // find route
-      var route:Route = null;
-      
       for (e in routes_yml.elements ){
         if(e.name == "map"){
           if(pathMatchesRoute(path.split("/"),e.node.path.innerData.split("/"))){
@@ -45,8 +47,7 @@ class Routes
         //route = routes_yml.node.default_route.innerData;
       }
       
-      dispatch(route);
-      
+      return dispatch(route);
     }
 	}
 	
@@ -77,13 +78,14 @@ class Routes
 	  return new RestfulRoute( route_name, request_uri, method, params);
 	}
 	
-	public static function dispatch(route:Route):Void
+	public static function dispatch(route:Route):AeroController
 	{
-    var controller = Utils.toCamelCase(route.controller);
+    var controller = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action]);
 	  Reflect.callMethod(
 	    Type.resolveClass("controllers."+controller),
-	    Reflect.field(Type.resolveClass("controllers."+controller),route.action),
+	    Reflect.field(controller,route.action),
 	    [route.params]);
+	  return cast(controller, AeroController);
 	}
 	
 }

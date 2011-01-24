@@ -35,27 +35,27 @@ class Takeoff
     
 		// convert  List<{ value : String, header : String}> to Hash<String>
 		
-		php.Lib.print("<html><body><ul>");
-		php.Lib.print('<li>Request uri : '+ path + '</li>');
-		php.Lib.print('<li>Request method : '+ method + '</li>');
-		for(h in headers){
-			php.Lib.print('<li>'+ h.header + ' : ' + h.value + '</li>');
-		}
-		php.Lib.print('</ul><h2>Params</h2><ul>');
-		for(k in params.keys()){
-			php.Lib.print('<li>'+ k + ' : ' + params.get(k) + '</li>');
-		}
-		
-		
-		php.Lib.print("</ul></body></html>");
-		
+	/*  php.Lib.print("<html><body><ul>");
+	   php.Lib.print('<li>Request uri : '+ path + '</li>');
+	   php.Lib.print('<li>Request method : '+ method + '</li>');
+	   for(h in headers){
+	     php.Lib.print('<li>'+ h.header + ' : ' + h.value + '</li>');
+	   }
+	   php.Lib.print('</ul><h2>Params</h2><ul>');
+	   for(k in params.keys()){
+	     php.Lib.print('<li>'+ k + ' : ' + params.get(k) + '</li>');
+	   }
+	   
+	   
+	   php.Lib.print("</ul></body></html>");*/
+		  
 		
 		// compile classes
 	  ImportClassesMacro.write();
 		ImportClasses;
 		
-		Routes.resolve(path, method, params);
-		
+		var controller = Routes.resolve(path, method, params);
+		controller.view.render();
 	
 	}
 }
