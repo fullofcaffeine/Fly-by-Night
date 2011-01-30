@@ -1,0 +1,16 @@
+development:
+  adapter: sqlite3
+  database: development.sqlite3
+
+sqlite3_sample:
+  adapter: sqlite3
+  database: development.sqlite3
+
+mysql_sample:
+  adapter: mysql
+  host: "localhost"
+  database: "MyDatabase"
+  user: "root"
+  pass: ""
+  port : 3306
+  socket : null

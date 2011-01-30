@@ -1,0 +1,2 @@
+#!/bin/bash
+haxe -cp avionics/Engage -cp engine -cp cargo -cp plot -cp plot/schemes -main Engage -x autopilot/engage

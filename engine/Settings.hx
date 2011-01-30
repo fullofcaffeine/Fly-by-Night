@@ -1,5 +1,9 @@
 /* store all settings in environment variables */
-import php.Sys;
+#if php
+  import php.Sys;
+#elseif neko
+  import neko.Sys;
+#end
 class Settings
 {
 

@@ -1,0 +1,3 @@
+#!/bin/bash
+haxe -cp avionics/Devise -cp engine -cp cargo -main Devise -neko autopilot/devise.n
+neko ./autopilot/devise.n $*

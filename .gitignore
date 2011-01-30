@@ -1,3 +1,6 @@
 FlyByNight.tmproj
 deploy/*
 /engine/ImportClasses.hx
+/autopilot/engage.n
+/autopilot/devise.n
+/plot/ImportSchemes.hx
