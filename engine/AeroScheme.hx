@@ -34,8 +34,11 @@ class %NAME% extends AeroScheme, implements IScheme{
 class %NAME% extends AeroScheme, implements IScheme{
   public function engage():Void
   {
-    create_table('%TABLENAME%', {
-      
+    create_table('%TABLENAME%', null, 
+'
+column_name: type
+timestamps
+'      
     });
   }
   public function abort():Void
@@ -44,8 +47,8 @@ class %NAME% extends AeroScheme, implements IScheme{
   }
 }";
 
-/*  public var exists: Bool;*/
-
+  private static inline var CREATED_AT_TIMESTAMP_COLUMN = "created_at DATETIME";
+  private static inline var UPDATED_AT_TIMESTAMP_COLUMN = "updated_at DATETIME";
   private var connection: Connection;
 
   public function new(connection:Connection)
@@ -68,7 +71,12 @@ class %NAME% extends AeroScheme, implements IScheme{
     var columns_array = new Array<String>();
     if(!dont_make_id) columns_array.push("id INTEGER PRIMARY KEY AUTOINCREMENT");
     for(c in columns_yaml.elements){
-      columns_array.push(build_column(c));
+      if(c.name.toLowerCase() == "timestamps"){
+        columns_array.push(CREATED_AT_TIMESTAMP_COLUMN);
+        columns_array.push(UPDATED_AT_TIMESTAMP_COLUMN);
+      }else{
+        columns_array.push(build_column(c));
+      }
     }
     var columns = columns_array.join(", ");
 
