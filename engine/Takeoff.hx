@@ -24,7 +24,7 @@ class Takeoff
 		var headers = php.Web.getClientHeaders();
 		var path = php.Web.getURI();
 		var params = php.Web.getParams();
-		
+    
 		// CHANGE method for params _method 
 		var _method = php.Web.getMethod();
 		var method = switch(_method){
@@ -55,7 +55,7 @@ class Takeoff
 		ImportClasses;
 		
 		var controller = Routes.resolve(path, method, params);
-		controller.view.render();
+		if(controller.view != null) controller.view.render();
 	
 	}
 }
