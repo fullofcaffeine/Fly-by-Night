@@ -1,0 +1,10 @@
+%h1 Create new Post
+%form{ action : "/posts", method : "POST" }
+  %p
+    = label("title", "Title")
+    = text_field("title")
+  %p
+    = label("body", "Body")
+    = text_field("body")
+
+  %input{ type : "submit", value : "Create" }
