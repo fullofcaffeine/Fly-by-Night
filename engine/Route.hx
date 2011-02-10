@@ -7,13 +7,13 @@ class Route
   public var action: String; // update
   public var via: HTTPVerb; // put
   public var params: Hash<String>;
-	public function new( name:String, path:String, request_uri:String, controller:String, action:String, via:HTTPVerb, ?params:Hash<String> = null )
+	public function new( name:String, path:String, request_uri:String, controller:String, action:String, via:HTTPVerb, ?params:Hash<String>)
 	{
 		this.name = name;
 		this.path = if(StringTools.startsWith(path, "/")) path.substr(1) else path;
 		this.request_uri = request_uri;
 		this.controller = controller;
-		this.action = action;
+		this.action = (action == "new")? "make" : action;
 		this.via = via;
     this.params = (params != null)? params : new Hash<String>();
     processParams();
