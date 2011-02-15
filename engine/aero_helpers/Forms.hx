@@ -10,7 +10,7 @@ class Forms extends AeroHelper
   }
   public inline function label( attribute_name:String, ?val:String ):String
   {
-    var _id = Utils.to_underscore(controller.name+" "+attribute_name);
+    var _id = Utils.to_underscore(Utils.singularize(controller.name)+" "+attribute_name);
     attribute_name = (val!=null)? val : Utils.titleize(attribute_name); 
     return "<label id='label_for_"+_id+"' for='"+_id+"'>"+attribute_name+"</label>";
   }
@@ -41,7 +41,7 @@ class Forms extends AeroHelper
   */
   public inline function text_field( attribute_name:String ):String
   {
-    var obj = Utils.to_underscore(controller.name);
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
     var _id = obj+"_"+Utils.to_underscore(attribute_name);
     var input_index = getInputIndex(obj);
     var _name = obj+"["+input_index+"]";
