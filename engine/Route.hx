@@ -28,4 +28,16 @@ class Route
 	    }
 	  }
 	}
+	
+	public inline function toString(  ):String
+	{
+	  return Type.getClassName(Type.getClass(this)) + " : " + 
+	    "\n\tName: "+ name +
+	    "\n\tPath: "+ path + 
+	    "\n\tRequest URI: " + request_uri +
+	    "\n\tController: " + controller +
+	    "\n\tAction: " + action +
+	    "\n\tVia: " + via +
+	    "\n\tParams: \n\t\t" + params.toString();
+	}
 }
