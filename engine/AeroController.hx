@@ -30,6 +30,24 @@ class AeroController
       view = new AeroView(this);
   }
   
+  private inline function getParam( obj:String, key:String ):String
+  {
+    var val = "";
+	  var keys = php.Web.getParamValues(obj+"_keys");
+	  var vals = php.Web.getParamValues(obj);
+	  
+	  if(keys != null && vals != null){
+	    var l = keys.length;
+  	  for(i in 0...l){
+  	    if(keys[i] == key){
+  	      val = vals[i];
+  	      break;
+  	    }
+  	  }
+	  }
+	  return val;
+  }
+  
   private static inline function getObjParams( obj:String ): Hash<String>
 	{
 	  var h = new Hash<String>();
