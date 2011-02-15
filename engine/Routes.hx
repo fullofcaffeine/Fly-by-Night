@@ -80,12 +80,19 @@ class Routes
 	
 	public static function dispatch(route:Route):AeroController
 	{
-    var controller = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params]);
-	  Reflect.callMethod(
-	    Type.resolveClass("controllers."+controller),
-	    Reflect.field(controller,route.action),
-	    [route.params]);
-	  return cast(controller, AeroController);
+    var controller:AeroController = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params]);
+    Reflect.callMethod(
+       controller,
+       Reflect.field(controller,controller.action),
+       [route.params]);
+	  return controller;
+	    
+	  /*var controller = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params]);
+      Reflect.callMethod(
+        Type.resolveClass("controllers."+controller),
+        Reflect.field(controller,route.action),
+        [route.params]);
+      return cast(controller, AeroController);*/
 	}
 	
 }
