@@ -53,6 +53,7 @@ class Utils
   public static inline function singularize( plural:String ):String
   {
     // need to grab rails' inflections
+    plural = StringTools.trim(plural);
     if(StringTools.endsWith(plural, "s")) return plural.substr(0,-1);
     else return plural;
   }
