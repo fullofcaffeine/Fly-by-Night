@@ -6,8 +6,16 @@ class Posts extends controllers.Application
 	{
     content.set("content", "Hello Posts INDEX");
 	}
-	public function show( params:Hash<String> ):Void
+	public function show( ):Void
 	{
 	  content.set("content", "Hello Posts SHOW "+params.get("id"));
 	}
+	
+  public function make():Void{ }
+  
+  public function create( ):Void
+  {
+    trace(obj_params);
+  }
+  
 }
