@@ -9,11 +9,6 @@ import neko.db.Sqlite;
 import neko.db.Connection;
 import neko.db.ResultSet;
 import yaml_crate.YamlHX;
-enum Adapters
-{
-  sqlite3;
-  mysql;
-}
 class Engage
 {
   public static inline var SCHEME_VERSION_TABLE_NAME = "schemes_plotted";
@@ -24,7 +19,12 @@ for Fly by Night haXe web framework
 
 Egages all schemes that have not been executed.
 
-Usage : neko ./autopilot/engage.n
+Default Environment is 'development' 
+
+Usage:    neko ./autopilot/engage.n
+Same as:  neko ./autopilot/engage.n development
+Other:    neko ./autopilot/engage.n production
+
 ");
   }
 
@@ -58,9 +58,9 @@ or ./config/database.yml config does not exist.");
     }
     
     var db_config = db_config_yml.node.resolve(env);
-    if(!Reflect.hasField(Adapters,db_config.node.adapter.innerData)){
+    if(!Reflect.hasField(DBAdapters,db_config.node.adapter.innerData)){
       throw("ERROR! Fly by Night does not support adapter: "+db_config.node.adapter.innerData+"
-Please set adapter to one of "+Type.getEnumConstructs(Adapters)+"
+Please set adapter to one of "+Type.getEnumConstructs(DBAdapters)+"
 Feel free to fork Fly by Night and add support for it.
 https://github.com/theRemix/Fly-by-Night");
       return;

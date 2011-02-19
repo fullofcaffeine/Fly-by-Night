@@ -7,15 +7,22 @@ class ImportClassesMacro {
       controllers.push("import controllers."+controller_file_name.substr(0,-3)+";");
     }
     
+    var model_files = neko.FileSystem.readDirectory("./app/models/");
+    var models = new Array<String>();
+    for(model_file_name in model_files){
+      models.push("import models."+model_file_name.substr(0,-3)+";");
+    }
+    
     var helper_files = neko.FileSystem.readDirectory("./app/helpers/");
     var helpers = new Array<String>();
     for(helper_file_name in helper_files){
       helpers.push("import helpers."+helper_file_name.substr(0,-3)+";");
     }
     
-    var imploded = controllers.join("\n")+"\n";
-    imploded += helpers.join("\n");
-    imploded += "\nclass ImportClasses{}";
+    var imploded = models.join("\n")+"\n"+
+    controllers.join("\n")+"\n"+
+    helpers.join("\n") +
+    "\nclass ImportClasses{}";
 
     var file = neko.io.File.write("./engine/ImportClasses.hx", false);
     file.writeString(imploded);

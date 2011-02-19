@@ -1,10 +1,18 @@
 package controllers;
 import AeroController;
+import models.Post;
+using AeroModel;
+
 class Posts extends controllers.Application
 {
 	public function index( ):Void
 	{
+
+/*    trace(Type.typeof(AeroModel));*/
+    Post.find("hello");
+    
     content.set("content", "Hello Posts INDEX");
+    
 	}
 	public function show( ):Void
 	{
@@ -15,7 +23,12 @@ class Posts extends controllers.Application
   
   public function create( ):Void
   {
-    trace(obj_params);
+    var post = new Post();
+    post.title = obj_params.get("title");
+    post.body = obj_params.get("body");
+    post.insert();
+    
+    trace(post);
   }
   
 }

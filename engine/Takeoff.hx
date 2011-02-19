@@ -11,6 +11,15 @@ class Takeoff
 		// initialize variables
 		
 		/*    trace(php.Sys.environment());*/
+		
+		// env
+#if test
+    Settings.set("FBN_ENV", "test");
+#elseif production
+    Settings.set("FBN_ENV", "production");
+#else // development
+    Settings.set("FBN_ENV", "development");
+#end
     
     // set FBN_ROOT
     Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
@@ -56,6 +65,9 @@ class Takeoff
 		
 		var controller = Routes.resolve(path, method, params);
 		if(controller.view != null) controller.view.render();
-	
+	  
+	  
+	  // close any db connections
+	  DBConnection.close();
 	}
 }

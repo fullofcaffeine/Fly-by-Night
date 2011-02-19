@@ -1,11 +1,34 @@
 import php.FileSystem;
 import php.db.Object;
-class AeroModel extends db.Object
+import php.db.Manager;
+class AeroModel extends php.db.Object
 {
-  public var name: String;
+/*  public static var manager = new Manager(Type.getClass(this));*/
+  
+/*  public var name: String;*/
   public function new( )
   {
-    name = Type.getClassName(Type.getClass(this)).substr(8); // models.
+/*    name = Type.getClassName(Type.getClass(this)).substr(8); // models.*/
+
+    super();
+    
+    
     
   }
+
+  public function save( ):Bool
+  {
+    return true;
+  }
+  
+  public function destroy( ):Bool
+  {
+    return true;
+  }
+  
+  public static inline function find( model:Dynamic, s:String ):Void
+  {//, s:String
+    trace(model + " : " + s);
+  }
+  
 }
