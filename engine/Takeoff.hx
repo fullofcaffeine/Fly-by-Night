@@ -58,14 +58,21 @@ class Takeoff
 	   
 	   php.Lib.print("</ul></body></html>");*/
 		  
+		RunwayMacro.stage();
 		
-		// compile classes
-	  ImportClassesMacro.write();
-		ImportClasses;
-		
-		var controller = Routes.resolve(path, method, params);
-		if(controller.view != null) controller.view.render();
-	  
+		try{
+  		// compile classes
+      ImportClassesMacro.write();
+      ImportClasses;
+    
+    
+      var controller = Routes.resolve(path, method, params);
+      if(controller.view != null) controller.view.render();
+	  }catch( msg : String ){
+      throw("Error occurred: " + msg);
+    } // so that RunwayMacro.restore is always run
+    
+    RunwayMacro.restore();
 	  
 	  // close any db connections
 	  DBConnection.close();

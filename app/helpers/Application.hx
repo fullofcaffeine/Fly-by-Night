@@ -1,4 +1,3 @@
-package helpers;
 class Application extends AeroHelper
 {
   private var load_helpers: Array<Dynamic>;

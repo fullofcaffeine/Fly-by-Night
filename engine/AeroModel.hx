@@ -1,3 +1,7 @@
+/*
+  To see a full list of auto imported classes for all subclasses of AeroModel
+  See RunwayMacros.PREPEND_TO_MODEL
+*/
 import php.FileSystem;
 import php.db.Object;
 import php.db.Manager;

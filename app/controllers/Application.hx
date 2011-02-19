@@ -1,5 +1,3 @@
-package controllers;
-
 class Application extends AeroController
 {
   public function new( action:String, params:Hash<String> )

@@ -1,7 +1,4 @@
-package controllers;
-import AeroController;
 import models.Post;
-using AeroModel;
 
 class Posts extends controllers.Application
 {

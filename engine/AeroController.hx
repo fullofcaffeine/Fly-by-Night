@@ -1,5 +1,8 @@
+/*
+  To see a full list of auto imported classes for all subclasses of AeroController
+  See RunwayMacros.PREPEND_TO_CONTROLLER 
+*/
 import php.FileSystem;
-/*using AeroModel;*/
 class AeroController
 {
   public var name: String;
