@@ -13,13 +13,13 @@ class DBConnection
     if (_connection == null){
       var env = Settings.get("FBN_ENV");
       // check if db config has env set
-  		if(!FileSystem.exists('./config/database.yml')){
+  		if(!FileSystem.exists(Settings.get('FBN_ROOT')+'./config/database.yml')){
         throw("ERROR! ./config/database.yml config file does not exist.");
         return null;
       }
 
       // check if config has db setup for env
-      var db_config_yml = YamlHX.read(File.getContent('./config/database.yml'));
+      var db_config_yml = YamlHX.read(File.getContent(Settings.get('FBN_ROOT')+'./config/database.yml'));
       if(!db_config_yml.hasNode.resolve(env)){
         throw("ERROR! ./config/database.yml config does not define connection for: "+env);
         return null;
@@ -44,7 +44,7 @@ class DBConnection
         }
         var database = db_config.node.database.innerData;
 
-        _connection = Sqlite.open("./plot/"+database);
+        _connection = Sqlite.open(Settings.get('FBN_ROOT')+"./plot/"+database);
         /*
         cnx = Mysql.connect({ 
             host : "localhost",
@@ -56,7 +56,7 @@ class DBConnection
         });
         */
 
-        if(!FileSystem.exists("./plot/"+database)){
+        if(!FileSystem.exists(Settings.get('FBN_ROOT')+"./plot/"+database)){
           throw("ERROR creating sqlite3 database at ./plot/"+database+"
   is the directory ./plot/ writable?");
           return null;
