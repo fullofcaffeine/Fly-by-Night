@@ -11,9 +11,9 @@
 import haxe.macro.Expr;
 class RunwayMacro {
   
-  private static inline var PREPEND_TO_CONTROLLER = "package controllers;\nusing AeroModel;\n";
-  private static inline var PREPEND_TO_MODEL = "package models;\nusing AeroModel;\n";
-  private static inline var PREPEND_TO_HELPER = "package helpers;\nusing AeroModel;\n";
+  private static inline var PREPEND_TO_CONTROLLER = "/*DIRTY*/\npackage controllers;\nusing AeroModel;\n";
+  private static inline var PREPEND_TO_MODEL = "/*DIRTY*/\npackage models;\nusing AeroModel;\n";
+  private static inline var PREPEND_TO_HELPER = "/*DIRTY*/\npackage helpers;\nusing AeroModel;\n";
   
   @:macro public static function stage() : Expr {
    /* var p:neko.io.Process;
@@ -38,7 +38,11 @@ class RunwayMacro {
         /*neko.FileSystem.rename('./app/controllers/'+controller_file_name, './runway/controllers'+controller_file_name);*/
         
         file = neko.io.File.write("./app/controllers/"+controller_file_name, false);
-        file.writeString(PREPEND_TO_CONTROLLER+code);
+        if(StringTools.startsWith(code,"/*DIRTY*/")){
+          file.writeString(code); 
+        }else{
+          file.writeString(PREPEND_TO_CONTROLLER+code);
+        }
         file.close();
     }
 
@@ -54,7 +58,11 @@ class RunwayMacro {
       file.close();
     
       file = neko.io.File.write("./app/models/"+model_file_name, false);
-      file.writeString(PREPEND_TO_MODEL+code);
+      if(StringTools.startsWith(code,"/*DIRTY*/")){
+        file.writeString(code);
+      }else{
+        file.writeString(PREPEND_TO_MODEL+code);
+      }
       file.close();
     }
     
@@ -70,7 +78,11 @@ class RunwayMacro {
       file.close();
       
       file = neko.io.File.write("./app/helpers/"+helper_file_name, false);
-      file.writeString(PREPEND_TO_HELPER+code);
+      if(StringTools.startsWith(code,"/*DIRTY*/")){
+        file.writeString(code);
+      }else{
+        file.writeString(PREPEND_TO_HELPER+code);
+      }
       file.close();
     }
     
