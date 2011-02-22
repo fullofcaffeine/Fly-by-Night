@@ -60,17 +60,13 @@ class Takeoff
 		  
 		RunwayMacro.stage();
 		
-		try{
-  		// compile classes
-      ImportClassesMacro.write();
-      ImportClasses;
-    
-    
-      var controller = Routes.resolve(path, method, params);
-      if(controller.view != null) controller.view.render();
-	  }catch( msg : String ){
-      throw("Error occurred: " + msg);
-    } // so that RunwayMacro.restore is always run
+		// compile classes
+    ImportClassesMacro.write();
+    ImportClasses;
+  
+  
+    var controller = Routes.resolve(path, method, params);
+    if(controller.view != null) controller.view.render();
     
     RunwayMacro.restore();
 	  
