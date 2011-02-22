@@ -16,6 +16,7 @@ import neko.io.File;
 import yaml_crate.YamlHX;
 import haxe.xml.Fast;
 import neko.Lib;
+import DBAdapters;
 class AeroScheme
 {
 
@@ -50,10 +51,12 @@ timestamps
   private static inline var CREATED_AT_TIMESTAMP_COLUMN = "created_at DATETIME";
   private static inline var UPDATED_AT_TIMESTAMP_COLUMN = "updated_at DATETIME";
   private var connection: Connection;
+  private var db_adapter: DBAdapters;
 
-  public function new(connection:Connection)
+  public function new(connection:Connection, db_adapter:DBAdapters)
   {
     this.connection = connection;
+    this.db_adapter = db_adapter;
   }
   
   private inline function create_table( tablename:String, options:Dynamic, yaml_str:String ):Void
@@ -69,7 +72,12 @@ timestamps
     // columns
     var columns_yaml = YamlHX.read(yaml_str);
     var columns_array = new Array<String>();
-    if(!dont_make_id) columns_array.push("id INTEGER PRIMARY KEY AUTOINCREMENT");
+    if(!dont_make_id){
+      if(db_adapter == DBAdapters.sqlite3)
+        columns_array.push("id INTEGER PRIMARY KEY AUTOINCREMENT");
+      else
+        columns_array.push("id INTEGER PRIMARY KEY AUTO_INCREMENT");
+    }
     for(c in columns_yaml.elements){
       if(c.name.toLowerCase() == "timestamps"){
         columns_array.push(CREATED_AT_TIMESTAMP_COLUMN);
@@ -106,6 +114,10 @@ timestamps
       throw "'"+column_type.toUpperCase()+"' is not a valid SchemeDataType.\nSupported data types are "+Type.getEnumConstructs(SchemeDataType);
     }
     
+    if(column_type == "string" && db_adapter == DBAdapters.mysql){
+      column_type = "VARCHAR";
+    }
+    
     var not_null:String = (f.hasNode.null && f.node.null.innerData.toLowerCase() == "false")? "NOT NULL " : "";
 
     var column_default:String = (f.hasNode.resolve("default"))? "DEFAULT '"+f.node.resolve("default").innerData+"' " : "";
@@ -116,6 +128,8 @@ timestamps
       column_type = column_type+"("+f.node.limit.innerData+") ";
     }else if(f.hasNode.precision && f.hasNode.scale){
       column_type = column_type+"("+f.node.precision.innerData+","+f.node.scale.innerData+") ";
+    }else if(column_type == "VARCHAR" && db_adapter == DBAdapters.mysql){
+      column_type = column_type+"(255)";
     }
     //var precision:Int = (f.hasNode.precision)? Std.parseInt(f.node.precision.innerData) : null;
     //var scale:Int = (f.hasNode.scale)? Std.parseInt(f.node.scale.innerData) : null;
@@ -124,7 +138,15 @@ timestamps
     
     var primary_key:String = (f.hasNode.primary_key)? "PRIMARY KEY " : "";
     
-    var auto_increment:String = (f.hasNode.auto_increment)? "AUTOINCRMEENT " : "";
+    var auto_increment:String;
+    if(f.hasNode.auto_increment){
+      if(db_adapter == DBAdapters.sqlite3)
+        auto_increment = "AUTOINCRMEENT ";
+      else
+        auto_increment = "AUTO_INCRMEENT ";
+    }else{
+      auto_increment = "";
+    }
     
     var column = column_name+" "+column_type+" "+primary_key+not_null+auto_increment+unique;
     

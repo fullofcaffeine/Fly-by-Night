@@ -66,16 +66,17 @@ https://github.com/theRemix/Fly-by-Night");
       return;
     }
     
-    var adapter = db_config.node.adapter.innerData;
+    var adapter = Reflect.field(DBAdapters,db_config.node.adapter.innerData);
     var connection:Connection;
+    var _database:String = "";
     
-/*    if(adapter == Adapter.sqlite3.toString()){*/
+    if(adapter == DBAdapters.sqlite3){
       if(!db_config.hasNode.database){
         throw("ERROR! 'database' name is not set for sqlite3 adapter.
 Fix it! at ./config/database.yml");
         return;
       }
-      var database = db_config.node.database.innerData;
+      var database = db_config.node.database.innerData + ".sqlite3";
       
       connection = Sqlite.open("./plot/"+database);
       
@@ -85,71 +86,85 @@ is the directory ./plot/ writable?");
         return;
       }
       
-/*    }else{ // MYSQL
+    }else{ // MYSQL
+      var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "";
+      var _port = (db_config.hasNode.port)? Std.parseInt(db_config.node.port.innerData) : 3306;
+      _database = (db_config.hasNode.database)? db_config.node.database.innerData : "";
+      var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
+      var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
+      var _socket = (db_config.hasNode.socket)? db_config.node.socket.innerData : "";
       connection = neko.db.Mysql.connect({ 
-          host : "localhost",
-          port : 3306,
-          database : "MyDatabase",
-          user : "root",
-          pass : "",
-          socket : null
+          host : _host,
+          port : _port,
+          database : _database,
+          user : _user,
+          pass : _pass,
+          socket : _socket
       });
+    }
+
+
+    if(connection != null){
+    
+      var schemes_in_db:List<Dynamic>;
+      if(adapter == DBAdapters.sqlite3){
+        schemes_in_db = connection.request("SELECT name FROM sqlite_master WHERE type='table' AND name='"+SCHEME_VERSION_TABLE_NAME+"'").results();
+      }else{ // mysql
+        schemes_in_db = connection.request("SHOW Tables IN "+_database+" WHERE Tables_in_"+_database+" = '"+SCHEME_VERSION_TABLE_NAME+"';").results();
       }
-*/
     
+      if(schemes_in_db.length == 0){
+        // create the table
+        var cc = connection.request("CREATE TABLE IF NOT EXISTS "+SCHEME_VERSION_TABLE_NAME+" (phase VARCHAR(14) NOT NULL UNIQUE)");
+      }
     
-    var schemes_in_db = connection.request("SELECT name FROM sqlite_master WHERE type='table' AND name='"+SCHEME_VERSION_TABLE_NAME+"'").results();
+      schemes_in_db = connection.request("SELECT phase FROM "+SCHEME_VERSION_TABLE_NAME).results();
     
-    if(schemes_in_db.length == 0){
-      // create the table
-      var cc = connection.request("CREATE TABLE IF NOT EXISTS "+SCHEME_VERSION_TABLE_NAME+" (phase VARCHAR(14) NOT NULL UNIQUE)");
-    }
+      // check if directory exists
+  		if(!FileSystem.exists('./plot/schemes/')){
+  		  connection.close();
+        throw("ERROR! not in a Fly by Night project root directory
+  or ./plot/schemes/ directory does not exist.");
+        return;
+      }
     
-    schemes_in_db = connection.request("SELECT phase FROM "+SCHEME_VERSION_TABLE_NAME).results();
+  		// compile classes
+      ImportClassesMacro.import_schemes();
+      ImportSchemes;
     
-    // check if directory exists
-		if(!FileSystem.exists('./plot/schemes/')){
-		  connection.close();
-      throw("ERROR! not in a Fly by Night project root directory
-or ./plot/schemes/ directory does not exist.");
-      return;
-    }
-    
-		// compile classes
-    ImportClassesMacro.import_schemes();
-    ImportSchemes;
-    
-    var dir_list = FileSystem.readDirectory('./plot/schemes/');
-    var phase = "";
-    var class_name = "";
-    var scheme:IScheme;
-    var plotted = false;
-    for(scheme_name in dir_list){
-      phase = scheme_name.substr(7,14);
+      var dir_list = FileSystem.readDirectory('./plot/schemes/');
+      var phase = "";
+      var class_name = "";
+      var scheme:IScheme;
+      var plotted = false;
+      for(scheme_name in dir_list){
+        phase = scheme_name.substr(7,14);
       
-      plotted = false;
+        plotted = false;
       
-      for(s in schemes_in_db){
-        if(s.phase == phase){
-          plotted = true;
-          break;
+        for(s in schemes_in_db){
+          if(s.phase == phase){
+            plotted = true;
+            break;
+          }
         }
-      }
       
-      if(!plotted){
-        class_name = scheme_name.substr(0,-3);
-        scheme = Type.createInstance(Type.resolveClass(class_name), [connection]);
-        Lib.print("\n==  "+class_name+": Running ==");
-        scheme.engage();
-        connection.request("INSERT INTO schemes_plotted (phase) VALUES ("+phase+") ");
-        Lib.print("\n==  "+class_name+": Engaged! ==");
-      }
+        if(!plotted){
+          class_name = scheme_name.substr(0,-3);
+          scheme = Type.createInstance(Type.resolveClass(class_name), [connection, adapter]);
+          Lib.print("\n==  "+class_name+": Running ==");
+          scheme.engage();
+          connection.request("INSERT INTO schemes_plotted (phase) VALUES ("+phase+") ");
+          Lib.print("\n==  "+class_name+": Engaged! ==");
+        }
       
+      }
+    
+      connection.close();
+    
+      Lib.print("\n==  Schemes are all plotted. ==");
+    }else{
+      Lib.print("\n==  Error creating a connection to db. ==");
     }
-    
-    connection.close();
-    
-    Lib.print("\n==  Schemes are all plotted. ==");
-    
 	}
 }

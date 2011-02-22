@@ -1,16 +1,21 @@
 development:
-  adapter: sqlite3
-  database: development.sqlite3
-
+  adapter: mysql
+  host: localhost
+  port: 3306
+  database: fbn_development
+  user: fbn_development
+  pass: fbn_development
+  socket: /Applications/MAMP/tmp/mysql/mysql.sock
+  
 sqlite3_sample:
   adapter: sqlite3
-  database: development.sqlite3
+  database: development
 
 mysql_sample:
   adapter: mysql
-  host: "localhost"
-  database: "MyDatabase"
-  user: "root"
-  pass: ""
+  host: localhost
+  database: MyDatabase
+  user: root
+  pass: secret
   port : 3306
   socket : null

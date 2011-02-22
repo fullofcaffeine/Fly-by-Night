@@ -34,9 +34,9 @@ class DBConnection
         return null;
       }
 
-      var adapter = db_config.node.adapter.innerData;
-
-  /*    if(adapter == Adapter.sqlite3.toString()){*/
+      var adapter = Reflect.field(DBAdapters,db_config.node.adapter.innerData);
+      
+      if(adapter == DBAdapters.sqlite3){
         if(!db_config.hasNode.database){
           throw("ERROR! 'database' name is not set for sqlite3 adapter.
   Fix it! at ./config/database.yml");
@@ -45,26 +45,31 @@ class DBConnection
         var database = db_config.node.database.innerData;
 
         _connection = Sqlite.open(Settings.get('FBN_ROOT')+"./plot/"+database);
-        /*
-        cnx = Mysql.connect({ 
-            host : "localhost",
-            port : 3306,
-            database : "MyDatabase",
-            user : "root",
-            pass : "",
-            socket : null
-        });
-        */
-
+      
         if(!FileSystem.exists(Settings.get('FBN_ROOT')+"./plot/"+database)){
           throw("ERROR creating sqlite3 database at ./plot/"+database+"
   is the directory ./plot/ writable?");
           return null;
         }
+      }else{ // MYSQL
+        var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "";
+        var _port = (db_config.hasNode.port)? Std.parseInt(db_config.node.port.innerData) : 3306;
+        var _database = (db_config.hasNode.database)? db_config.node.database.innerData : "";
+        var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
+        var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
+        var _socket = (db_config.hasNode.socket)? db_config.node.socket.innerData : "";
+        _connection = Mysql.connect({ 
+            host : _host,
+            port : _port,
+            database : _database,
+            user : _user,
+            pass : _pass,
+            socket : _socket
+        });
+      }
         
-        
-        Manager.cnx = _connection;
-        Manager.initialize();
+      Manager.cnx = _connection;
+      Manager.initialize();
         
     }
     return _connection; }
