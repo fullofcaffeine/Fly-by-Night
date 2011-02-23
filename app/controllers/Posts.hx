@@ -4,11 +4,9 @@ class Posts extends controllers.Application
 {
 	public function index( ):Void
 	{
-
-/*    trace(Type.typeof(AeroModel));*/
     var posts = Post.all();
-    
-    content.set("content", "hello "+posts.length);
+    content.set("posts", posts);
+    content.set("content", "Showing "+posts.length+" posts.");
     
 	}
 	public function show( ):Void
