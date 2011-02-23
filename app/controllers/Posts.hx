@@ -6,9 +6,9 @@ class Posts extends controllers.Application
 	{
 
 /*    trace(Type.typeof(AeroModel));*/
-    Post.find("hello");
+    var posts = Post.all();
     
-    content.set("content", "Hello Posts INDEX");
+    content.set("content", "hello "+posts.length);
     
 	}
 	public function show( ):Void

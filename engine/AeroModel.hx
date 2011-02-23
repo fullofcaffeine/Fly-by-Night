@@ -7,17 +7,12 @@ import php.db.Object;
 import php.db.Manager;
 class AeroModel extends php.db.Object
 {
-/*  public static var manager = new Manager(Type.getClass(this));*/
+  public var name: String;
   
-/*  public var name: String;*/
   public function new( )
   {
-/*    name = Type.getClassName(Type.getClass(this)).substr(8); // models.*/
-
+    name = Type.getClassName(Type.getClass(this)).substr(8); // models.
     super();
-    
-    
-    
   }
 
   public function save( ):Bool
@@ -30,8 +25,22 @@ class AeroModel extends php.db.Object
     return true;
   }
   
+  public static inline function all( model:Dynamic, ?conditions:String ):List<Dynamic>
+  {
+    DBConnection.connection;
+    
+    var class_name = Type.getClassName(model);
+    var result:List<Dynamic> = new List<Dynamic>();
+    if(Type.getSuperClass(model) == AeroModel){
+      
+      var manager = new Manager(cast Type.resolveClass(class_name));
+      result = manager.all(false);
+/*      result = manager.objects("SELECT * FROM posts", false);*/
+    }
+    return result;
+  }
   public static inline function find( model:Dynamic, s:String ):Void
-  {//, s:String
+  {
     trace(model + " : " + s);
   }
   
