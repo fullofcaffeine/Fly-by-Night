@@ -7,12 +7,16 @@ import php.db.Object;
 import php.db.Manager;
 class AeroModel extends php.db.Object
 {
-  public var name: String;
-  
+/*  public var name: String;*/
+  public var manager: Dynamic;
   public function new( )
   {
-    name = Type.getClassName(Type.getClass(this)).substr(8); // models.
+    DBConnection.connection;
+/*    name = Type.getClassName(Type.getClass(this)).substr(8); // models.*/
+    manager = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
+    
     super();
+      
   }
 
   public function save( ):Bool
