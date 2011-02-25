@@ -71,9 +71,10 @@ class AeroController
   {
     Web.redirect(url);
   }
-  private inline function render(url:String):Void
+  private inline function render(named_route:Routes):Void
   {
-    
+    /*var controller = Route.resolve(path, method, params);
+        if(controller.view != null) controller.view.render();*/
   }
 
 }
