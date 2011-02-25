@@ -3,6 +3,7 @@
   See RunwayMacros.PREPEND_TO_CONTROLLER 
 */
 import php.FileSystem;
+import php.Web;
 class AeroController
 {
   public var name: String;
@@ -68,7 +69,7 @@ class AeroController
 
   private inline function redirect_to(url:String):Void
   {
-    
+    Web.redirect(url);
   }
   private inline function render(url:String):Void
   {

@@ -5,7 +5,7 @@ class Posts extends controllers.Application
 	public function index( ):Void
 	{
     var posts = Post.all();
-    trace(Routes.posts.path());
+    redirect_to(Routes.root.path());
     content.set("posts", posts);
     content.set("content", "Showing "+posts.length+" posts.");
     
