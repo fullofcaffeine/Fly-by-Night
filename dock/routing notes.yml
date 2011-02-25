@@ -6,8 +6,8 @@ root: Landing
 #   controller: Landing
 #   action: index
 
-foo1: rest
-foo2: rest
+rest: Foo1
+rest: Foo2
 admin:
   foo3: rest
   foo4: rest

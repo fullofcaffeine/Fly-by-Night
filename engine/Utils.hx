@@ -57,6 +57,13 @@ class Utils
     if(StringTools.endsWith(plural, "s")) return plural.substr(0,-1);
     else return plural;
   }
+  public static inline function pluralize( singular:String ):String
+  {
+    // need to grab rails' methods
+    singular = StringTools.trim(singular);
+/*    if(StringTools.endsWith(singular, "s")) return plural.substr(0,-1);*/
+    return singular+"s";
+  }
   public static inline function timestamp(  ):String
   {
     return Date.now().toString().split(" ").join("").split("-").join("").split(":").join("");

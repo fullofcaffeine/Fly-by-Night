@@ -5,6 +5,7 @@ class Posts extends controllers.Application
 	public function index( ):Void
 	{
     var posts = Post.all();
+    trace(Routes.posts.path());
     content.set("posts", posts);
     content.set("content", "Showing "+posts.length+" posts.");
     
@@ -23,7 +24,12 @@ class Posts extends controllers.Application
     post.body = obj_params.get("body");
     post.insert();
     
-    trace(post);
+/*    trace(post);*/
+    if(post.save()){
+      redirect_to( Routes.posts.path() );
+    }else{
+      render( Routes.new_post.path() );
+    }
   }
   
 }

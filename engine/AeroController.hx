@@ -66,4 +66,13 @@ class AeroController
 	  return h;
 	}
 
+  private inline function redirect_to(url:String):Void
+  {
+    
+  }
+  private inline function render(url:String):Void
+  {
+    
+  }
+
 }

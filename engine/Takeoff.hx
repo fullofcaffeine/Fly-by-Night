@@ -60,12 +60,16 @@ class Takeoff
 		  
 		RunwayMacro.stage();
 		
+		// write paths from routes.yml
+		RoutesMacro.write();
+		Routes;
+		
 		// compile classes
     ImportClassesMacro.write();
     ImportClasses;
   
   
-    var controller = Routes.resolve(path, method, params);
+    var controller = Route.resolve(path, method, params);
     if(controller.view != null) controller.view.render();
     
     RunwayMacro.restore();

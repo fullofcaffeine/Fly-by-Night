@@ -11,9 +11,9 @@
 import haxe.macro.Expr;
 class RunwayMacro {
   
-  private static inline var PREPEND_TO_CONTROLLER = "/*DIRTY*/\npackage controllers;\nusing AeroModel;\n";
+  private static inline var PREPEND_TO_CONTROLLER = "/*DIRTY*/\npackage controllers;\nusing AeroModel;\nusing AeroPath;\n";
   private static inline var PREPEND_TO_MODEL = "/*DIRTY*/\npackage models;\nusing AeroModel;\n";
-  private static inline var PREPEND_TO_HELPER = "/*DIRTY*/\npackage helpers;\nusing AeroModel;\n";
+  private static inline var PREPEND_TO_HELPER = "/*DIRTY*/\npackage helpers;\nusing AeroModel;\nusing AeroPath;\n";
   
   @:macro public static function stage() : Expr {
    /* var p:neko.io.Process;
@@ -22,6 +22,8 @@ class RunwayMacro {
        
        p = new neko.io.Process("/bin/bash", ["cp", "-a","./app/models","./runway/"]);
        p.close(); // close the process I/O*/
+    
+    // IF DIRTY, REMOVE LINES THEN CONTINUE, DO NOT restore().
     
     var file: neko.io.FileOutput;
     var code: String;
