@@ -22,13 +22,8 @@ class Posts extends controllers.Application
     var post = new Post();
     post.title = obj_params.get("title");
     post.body = obj_params.get("body");
-    post.insert();
     
-/*    trace(post);*/
     if(post.save()){
-      HXUploader.upload();
-      
-      
       redirect_to( Routes.posts.path() );
     }else{
 /*      render( Routes.new_post );*/

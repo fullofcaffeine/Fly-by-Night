@@ -1,5 +1,8 @@
 /* Boot class */
 import php.Sys;
+import php.Session;
+import php.io.File;
+import yaml_crate.YamlHX;
 class Takeoff
 {
 
@@ -23,8 +26,17 @@ class Takeoff
     
     // set FBN_ROOT
     Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
-		
-		
+    
+    // read application config
+    var app_yml = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
+    
+    if(app_yml != null){
+      if(Settings.set("FBN_SESSION_ENABLE", app_yml.get("session.enable")) == "true"){
+        Settings.set("FBN_SESSION_PREFIX", app_yml.get("session.prefix"));
+        Session.start();
+      }
+    }
+    
 		// route request to AeroController, AeroRestController handles the REST
 		
 		
@@ -76,5 +88,10 @@ class Takeoff
 	  
 	  // close any db connections
 	  DBConnection.close();
+	  
+	  // close sessions
+	  if(Settings.get("FBN_SESSION_ENABLE") == "true"){
+      Session.close();
+    }
 	}
 }
