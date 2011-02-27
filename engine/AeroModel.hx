@@ -21,6 +21,9 @@ class AeroModel extends php.db.Object
 
   public function save( ):Bool
   {
+    this.insert();
+/*    this.update();*/
+    // to checks, validations, etc.
     return true;
   }
   
