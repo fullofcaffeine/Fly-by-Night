@@ -1,4 +1,5 @@
 import models.Post;
+import hxuploader_crate.HXUploader;
 
 class Posts extends controllers.Application
 {
@@ -25,6 +26,9 @@ class Posts extends controllers.Application
     
 /*    trace(post);*/
     if(post.save()){
+      HXUploader.upload();
+      
+      
       redirect_to( Routes.posts.path() );
     }else{
 /*      render( Routes.new_post );*/

@@ -51,6 +51,16 @@ class Forms extends AeroHelper
     return tag;
   }
   
+  public inline function file_field( attribute_name:String ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var _name = _id;
+    
+    var tag = "<input id='"+_id+"' type='file' name='"+_name+"' />";
+    return tag;
+  }
+  
   private inline function getInputIndex( obj:String ):Int
   {
     var i = 0;

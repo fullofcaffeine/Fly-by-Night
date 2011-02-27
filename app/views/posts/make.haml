@@ -1,10 +1,7 @@
 %h1 Create new Post
-%form{ action : "/posts", method : "POST" }
-  %p
-    = label("title", "Title")
-    = text_field("title")
-  %p
-    = label("body", "Body")
-    = text_field("body")
+%form{ action : "/posts", method : "POST", enctype : "multipart/form-data" }
 
+  %p
+    = label("filletobeuploaded", "File to be Uploaded")
+    = file_field("filletobeuploaded")
   %input{ type : "submit", value : "Create" }
