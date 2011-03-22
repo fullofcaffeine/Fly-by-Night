@@ -5,7 +5,7 @@ class Application extends AeroController
     super(action,params);
     
     var page = new Hash<Dynamic>();
-    page.set("title","Fly By Night");
+    page.set("title", APP_CONFIG("site_title"));
     content.set("page", page);
   }
 }
