@@ -1,11 +1,14 @@
 /* Boot class */
 import php.Sys;
 import php.Session;
-import php.io.File;
 import yaml_crate.YamlHX;
+import php.io.File;
 class Takeoff
 {
-
+  public static var headers: List<{ value : String, header : String}>;
+  public static var path: String;
+  public static var params: Hash<String>;
+  public static var controller: AeroController;
   
 	static function main() {
 	  // read configs
@@ -25,14 +28,16 @@ class Takeoff
 #end
     
     // set FBN_ROOT
-    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
+    // Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
+    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT")+"/../");
     
     // read application config
-    var app_yml = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
+    FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
     
-    if(app_yml != null){
-      if(Settings.set("FBN_SESSION_ENABLE", app_yml.get("session.enable")) == "true"){
-        Settings.set("FBN_SESSION_PREFIX", app_yml.get("session.prefix"));
+    if(FlyByNightMixins._APP_CONFIG != null){
+      
+      if(Settings.set("FBN_SESSION_ENABLE", FlyByNightMixins.APP_CONFIG(null, "session.enable")) == "true"){
+        Settings.set("FBN_SESSION_PREFIX", FlyByNightMixins.APP_CONFIG(null,"session.prefix"));
         Session.start();
       }
     }
@@ -42,9 +47,9 @@ class Takeoff
 		
 		// Build/ Instantiate a Request object
 		
-		var headers = php.Web.getClientHeaders();
-		var path = php.Web.getURI();
-		var params = php.Web.getParams();
+		headers = php.Web.getClientHeaders();
+		path = php.Web.getURI();
+		params = php.Web.getParams();
     
 		// CHANGE method for params _method 
 		var _method = php.Web.getMethod();
