@@ -11,9 +11,9 @@
 import haxe.macro.Expr;
 class RunwayMacro {
   
-  private static inline var PREPEND_TO_CONTROLLER = "/*DIRTY*/\npackage controllers;\nusing AeroModel;\nusing AeroPath;\n";
-  private static inline var PREPEND_TO_MODEL = "/*DIRTY*/\npackage models;\nusing AeroModel;\n";
-  private static inline var PREPEND_TO_HELPER = "/*DIRTY*/\npackage helpers;\nusing AeroModel;\nusing AeroPath;\n";
+  private static inline var PREPEND_TO_CONTROLLER = "/*DIRTY*/\npackage controllers;\nusing AeroModel;\nusing AeroPath;\nusing FlyByNightMixins;\n/*DIRTY*/\n";
+  private static inline var PREPEND_TO_MODEL = "/*DIRTY*/\npackage models;\nusing AeroModel;\nusing FlyByNightMixins;\n/*DIRTY*/\n";
+  private static inline var PREPEND_TO_HELPER = "/*DIRTY*/\npackage helpers;\nusing AeroModel;\nusing AeroPath;\nusing FlyByNightMixins;\n/*DIRTY*/\n";
   
   @:macro public static function stage() : Expr {
    /* var p:neko.io.Process;
