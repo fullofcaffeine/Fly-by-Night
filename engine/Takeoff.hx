@@ -53,29 +53,25 @@ class Takeoff
     
 		// CHANGE method for params _method 
 		var _method = php.Web.getMethod();
+    
 		var method = switch(_method){
 			case "GET" : HTTPVerb.GET;
-			case "POST" : HTTPVerb.POST;
+			case "POST" :
+			  if(params.exists("_method")){
+			    if(params.get("_method") == "DELETE"){
+			      HTTPVerb.DELETE;
+		      }else if(params.get("_method") == "PUT"){
+		        HTTPVerb.PUT;
+		      }
+			  }else{
+			    HTTPVerb.POST;
+			  }
+			  
 		}
-		
     
 		// convert  List<{ value : String, header : String}> to Hash<String>
 		
-	/*  php.Lib.print("<html><body><ul>");
-	   php.Lib.print('<li>Request uri : '+ path + '</li>');
-	   php.Lib.print('<li>Request method : '+ method + '</li>');
-	   for(h in headers){
-	     php.Lib.print('<li>'+ h.header + ' : ' + h.value + '</li>');
-	   }
-	   php.Lib.print('</ul><h2>Params</h2><ul>');
-	   for(k in params.keys()){
-	     php.Lib.print('<li>'+ k + ' : ' + params.get(k) + '</li>');
-	   }
-	   
-	   
-	   php.Lib.print("</ul></body></html>");*/
-		  
-		RunwayMacro.stage();
+	  RunwayMacro.stage();
 		
 		// write paths from routes.yml
 		RoutesMacro.write();
@@ -86,8 +82,31 @@ class Takeoff
     ImportClasses;
   
   
-    var controller = Route.resolve(path, method, params);
+/*    throw(path);*/
+    
+    controller = Route.resolve(path, method, params);
     if(controller.view != null) controller.view.render();
+    
+    
+    /*
+                php.Lib.print("<div class='fbn_debug'><ul>");
+                php.Lib.print('<li>Request uri : '+ path + '</li>');
+                php.Lib.print('<li>Request method : '+ method + '</li>');
+                for(h in headers){
+                  php.Lib.print('<li>'+ h.header + ' : ' + h.value + '</li>');
+                }
+                php.Lib.print('</ul><h3>Params</h3><ul>');
+                for(k in params.keys()){
+                  php.Lib.print('<li>'+ k + ' : ' + params.get(k) + '</li>');
+                }
+                
+                php.Lib.print("</ul><h3>SESSION</h3><p>");
+                php.Lib.print("ID: "+Session.getId()+"\n<br />Name: "+Session.getName()+"\n<br />Module: "+Session.getModule()+"\n<br />Save Path: "+Session.getSavePath());
+                php.Lib.print("</div>");
+                */
+    
+    
+    
     
     RunwayMacro.restore();
 	  
