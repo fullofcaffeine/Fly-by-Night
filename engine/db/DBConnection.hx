@@ -1,3 +1,5 @@
+package db;
+import db.DBAdapters;
 import yaml_crate.YamlHX;
 import php.io.File;
 import php.FileSystem;

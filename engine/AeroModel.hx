@@ -5,6 +5,7 @@
 import php.FileSystem;
 import php.db.Object;
 import php.db.Manager;
+import db.DBConnection;
 class AeroModel extends php.db.Object
 {
 /*  public var name: String;*/

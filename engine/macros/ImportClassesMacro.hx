@@ -1,3 +1,4 @@
+package macros;
 import haxe.macro.Expr;
 class ImportClassesMacro {
   @:macro public static function write() : Expr {
@@ -19,12 +20,13 @@ class ImportClassesMacro {
       helpers.push("import helpers."+helper_file_name.substr(0,-3)+";");
     }
     
-    var imploded = models.join("\n")+"\n"+
+    var imploded = "package macros;\n"+
+    models.join("\n")+"\n"+
     controllers.join("\n")+"\n"+
     helpers.join("\n") +
     "\nclass ImportClasses{}";
 
-    var file = neko.io.File.write("./engine/ImportClasses.hx", false);
+    var file = neko.io.File.write("./engine/macros/ImportClasses.hx", false);
     file.writeString(imploded);
     file.close();
     

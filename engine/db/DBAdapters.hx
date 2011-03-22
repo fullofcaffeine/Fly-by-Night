@@ -1,3 +1,4 @@
+package db;
 enum DBAdapters
 {
   sqlite3;

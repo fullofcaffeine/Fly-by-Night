@@ -1,6 +1,6 @@
 /*
-  All this does is adds some important 'import' and 'using' statements to subclasses 
-  to enable more functionality. 
+  Automatically includes some important 'import' and 'using' statements to subclasses 
+  to enable the functionality without having to remember to always include it. 
   
   Copies original files to ./runway/
   prepends imports and usings to the original files
@@ -8,6 +8,7 @@
   then replaces the originals with the "good" copy in ./runway/
   then cleans out ./runway when finished
 */
+package macros;
 import haxe.macro.Expr;
 class RunwayMacro {
   

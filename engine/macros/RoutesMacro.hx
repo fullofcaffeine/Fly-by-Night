@@ -1,3 +1,4 @@
+package macros;
 import yaml_crate.YamlHX;
 import haxe.macro.Expr;
 class RoutesMacro {
