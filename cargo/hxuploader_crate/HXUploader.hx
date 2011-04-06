@@ -1,6 +1,7 @@
 package hxuploader_crate;
 import haxe.io.Bytes;
 import php.Web;
+import php.NativeArray;
 import php.io.File;
 import php.io.FileOutput;
 import php.FileSystem;
@@ -28,4 +29,16 @@ class HXUploader
       totalBytes += len;
     });
   }
+
+	/* from project poko poko.utils.PhpTools */
+	public static function getFilesInfo():Hash <Hash<Dynamic>>
+		{
+			var files:Hash<NativeArray> = php.Lib.hashOfAssociativeArray(untyped __php__("$_FILES"));
+			var output:Hash < Hash < String >> = new Hash();
+
+			for (file in files.keys())
+				output.set(file, php.Lib.hashOfAssociativeArray(files.get(file)));	
+
+			return output;
+		}
 }
