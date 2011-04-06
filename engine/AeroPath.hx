@@ -8,7 +8,7 @@ class AeroPath
 	    uri = "/";
 	  }else{
   	  for(e in Route.routes_yml.elements){
-  	    if(e.name == "map" && e.hasNode.name && e.node.name.innerData == "name"){ // check if name exists in routes.yml
+  	    if(e.name == "map" && e.hasNode.name && e.node.name.innerData == name){ // check if name exists in routes.yml
   	      if(e.hasNode.uri){
   	        uri = e.node.uri.innerData;
   	        break;
@@ -25,22 +25,22 @@ class AeroPath
   	      if(name == Utils.pluralize(resource_name)){ // index
   	        uri = "/"+Utils.pluralize(resource_name);
   	        break;
-  	      }else if(name == resource_name){ // show
+  	      }else if(name == Utils.singularize(resource_name)){ // show
   	        uri = "/"+resource_name+"/"+id;
   	        break;
-          }else if(name == "new_"+resource_name){ // new
+          }else if(name == "new_"+Utils.singularize(resource_name)){ // new
             uri = "/"+resource_name+"/new";
             break;
-          }else if(name == "create_"+resource_name){ // create
+          }else if(name == "create_"+Utils.singularize(resource_name)){ // create
             uri = "/"+resource_name;
             break;
-          }else if(name == "edit_"+resource_name){ // edit
+          }else if(name == "edit_"+Utils.singularize(resource_name)){ // edit
             uri = "/"+resource_name+"/"+id+"/edit";
             break;
-          }else if(name == "update_"+resource_name){ // update
+          }else if(name == "update_"+Utils.singularize(resource_name)){ // update
             uri = "/"+resource_name+"/"+id;
             break;
-          }else if(name == "destroy_"+resource_name){ // destroy
+          }else if(name == "destroy_"+Utils.singularize(resource_name)){ // destroy
             uri = "/"+resource_name+"/"+id+"/destroy";
             break;
           }
