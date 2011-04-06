@@ -32,8 +32,8 @@ class Takeoff
 #end
     
     // set FBN_ROOT
-    // Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
-    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT")+"/../");
+    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
+/*    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT")+"/../");*/
     
     // read application config
     FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
