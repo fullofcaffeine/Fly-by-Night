@@ -6,6 +6,9 @@ class AeroHelper
 {
   public var controller: AeroController;
   public var yield: String;
+  /* if  private var load_helpers: Array<Dynamic>  exists
+   each is loaded 
+   by HamlHX */
   
   public function new( controller:AeroController )
   {
