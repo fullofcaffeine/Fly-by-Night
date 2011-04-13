@@ -114,7 +114,8 @@ class Route
 		// resolve path
 		
 		var route:Route = null;
-
+		var route_path:String = "";
+    
     if(path == "" && 
       try{ (routes_yml.get("root").length > 0); }catch(e:Dynamic){ false; } ){
         route = new Route("root", "", path, routes_yml.get("root"),"index",_method,params);
@@ -122,10 +123,19 @@ class Route
     }else{
       // find route
       for (e in routes_yml.elements ){
+        route_path = "";
+        if(e.hasNode.path){
+          route_path = e.node.path.innerData;
+          if(StringTools.startsWith(route_path,"/")){
+            route_path = route_path.substr(1);
+          }
+        }
         if(e.name == "map"){
-          if(pathMatchesRoute(path.split("/"),e.node.path.innerData.split("/"))){
-            route = mapToRoute(e, path, params);
-            break;
+          if(pathMatchesRoute(path.split("/"),route_path.split("/"))){
+            if(e.hasNode.via && e.node.via.innerData == Std.string(method)){
+              route = mapToRoute(e, path, method, params);
+              break;
+            }
           }
           
         }else if(e.name == "rest"){
@@ -149,6 +159,7 @@ class Route
 	private static function pathMatchesRoute( request_uri_segments:Array<String>, path_segments:Array<String> ):Bool
 	{
 	  // var r : EReg = ~/[:(a-zA-Z0-9_)+]/;
+	  if(request_uri_segments.length != path_segments.length) return false;
 	  for(i in 0...request_uri_segments.length){
 	    if(!StringTools.startsWith(path_segments[i], ":")){
 	      if(path_segments[i] != request_uri_segments[i]){
@@ -163,9 +174,9 @@ class Route
 	  return request_uri_segments[0] == resource_name;
 	}
 	
-	private static inline function mapToRoute( f:Fast, request_uri:String, params:Hash<String> ):Route
+	private static inline function mapToRoute( f:Fast, request_uri:String, method:HTTPVerb, params:Hash<String> ):Route
 	{
-    return new Route( f.node.name.innerData, f.node.path.innerData, request_uri, f.node.controller.innerData, f.node.action.innerData, Reflect.field(HTTPVerb, f.node.via.innerData), params);
+    return new Route( f.node.name.innerData, f.node.path.innerData, request_uri, f.node.controller.innerData, f.node.action.innerData, method, params);
 	}
 	
 	private static inline function mapToRestfulRoute( route_name:String, request_uri:String, method:HTTPVerb, params:Hash<String> ):RestfulRoute
@@ -176,10 +187,22 @@ class Route
 	public static function dispatch(route:Route):AeroController
 	{
     var controller:AeroController = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params]);
-    Reflect.callMethod(
-       controller,
-       Reflect.field(controller,controller.action),
-       [route.params]);
+
+    if(AeroController.runBeforeFilters(controller)){
+      
+      if(Reflect.hasField(controller, controller.action)){
+        Reflect.callMethod(
+          controller,
+          Reflect.field(controller,controller.action),
+          []);
+/*          [route.params]);*/
+      }else{
+        throw "ERROR! Controller: "+controller+"Does not have Action: "+controller.action;
+      }
+    }else{ // fail pail during before filters
+      
+      throw "oops, before filters has fail. "+Reflect.field(Type.getClass(controller), "before_all");
+    }
 	  return controller;
 	    
 	  /*var controller = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params]);

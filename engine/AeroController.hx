@@ -4,6 +4,7 @@
 */
 import php.FileSystem;
 import php.Web;
+
 class AeroController
 {
   public var name: String;
@@ -77,4 +78,37 @@ class AeroController
         if(controller.view != null) controller.view.render();*/
   }
 
+
+  /*
+	
+	  If any filter returns false, the action requested will not run
+	  
+	*/
+	public static inline function runBeforeFilters( controller:Dynamic ):Bool
+	{
+	  var positive_return = true;
+	  if(Reflect.hasField(Type.getClass(controller), "before_filter")){
+	    var filter:AirFilter = Reflect.field(Type.getClass(controller), "before_filter");
+/*      throw filter.except;*/
+
+      for(action in filter.actions){
+        if(positive_return){
+          if(filter.except != null && Lambda.has(filter.except, controller.action) ){
+            continue;
+          }
+          if(filter.only != null && !Lambda.has(filter.only, controller.action )){
+            continue;
+          }
+          if(Reflect.callMethod(controller, action, [])){
+            continue;
+          }else{
+            positive_return = false;
+            break;
+          }
+        }
+      }
+      
+    }
+    return positive_return;
+	}
 }

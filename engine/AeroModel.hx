@@ -9,6 +9,7 @@ import db.DBConnection;
 class AeroModel extends php.db.Object
 {
 /*  public var name: String;*/
+  public var id: Int;
   public var manager: Dynamic;
   public function new( )
   {

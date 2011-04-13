@@ -24,7 +24,7 @@ class RestfulRoute extends Route
 	        path += "/:id";
 	        if(method == HTTPVerb.DELETE){
 	          action = "destroy";
-	        }else if(method == HTTPVerb.PUT){
+	        }else if(method == HTTPVerb.POST){ // HTTPVerb.PUT
 	          action = "update";
 	        }else if(method == HTTPVerb.GET){
 	          action = "show";
@@ -33,14 +33,13 @@ class RestfulRoute extends Route
 	        }
 	      }
 	    case 3:
-	      if(request_segments[1] == "edit"){
+	      if(request_segments[2] == "edit"){
 	        path += "/:id/edit";
 	        action = "edit";
         }else{
           throw "UNKNOWN ROUTE"; // TODO better message
         }
 	  }
-	  
 		super(name, path, request_uri, name, action, method, params);
 	}
 }
