@@ -14,9 +14,11 @@ class AeroController
   public var helper: AeroHelper;
   public var params: Hash<String>;
   public var obj_params: Hash<String>;
+  public var route: Route;
   
-  public function new( action:String, params:Hash<String> )
+  public function new( action:String, params:Hash<String>, ?route:Route = null )
   {
+    this.route = route;
     name = Type.getClassName(Type.getClass(this)).substr(12); // controller.
     this.action = action;
     content = new Hash<Dynamic>();

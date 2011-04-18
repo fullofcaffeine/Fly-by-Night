@@ -2,4 +2,26 @@
 
 root: Landing
 rest: Posts
+map:
+  name: logout
+  path: logout
+  controller: sessions
+  action: logout
+  via: GET
+  uri: /logout
+map:
+  name: login
+  path: login
+  controller: sessions
+  action: login
+  via: GET
+  uri: /login
+map:
+  name: create_session
+  path: login
+  controller: sessions
+  action: login
+  via: POST
+  uri: /login
+  
 default_route: :controller/:action/:id

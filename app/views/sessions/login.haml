@@ -1,0 +1,14 @@
+#main
+  #loginbox
+    %h1= status
+    %form{ action : "/login", method : "POST"}
+      %fieldset
+        %div{class : "form-item"}
+          = label_val("username", "Username:")
+          = text_field("username")
+        %div{class : "form-item"}
+          = label_val("password", "Password:")
+          = password_field("password")
+        %div{class : "button"}
+          %input{type : "submit", value : "Login"}
+  %div{ class :"clear"} 

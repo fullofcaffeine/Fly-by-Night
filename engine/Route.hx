@@ -186,8 +186,7 @@ class Route
 	  
 	public static function dispatch(route:Route):AeroController
 	{
-    var controller:AeroController = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params]);
-
+    var controller:AeroController = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params,route]);
     if(AeroController.runBeforeFilters(controller)){
       
       if(Reflect.hasField(controller, controller.action)){

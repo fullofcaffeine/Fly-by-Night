@@ -7,4 +7,7 @@ create_post;
 edit_post;
 update_post;
 destroy_post;
+logout;
+login;
+create_session;
 }
