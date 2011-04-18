@@ -87,28 +87,70 @@ class AeroController
 	public static inline function runBeforeFilters( controller:Dynamic ):Bool
 	{
 	  var positive_return = true;
-	  if(Reflect.hasField(Type.getClass(controller), "before_filter")){
-	    var filter:AirFilter = Reflect.field(Type.getClass(controller), "before_filter");
-/*      throw filter.except;*/
+	  var this_class = Type.getClass(controller);
+	  
+	  if(Std.is(controller, AeroController)){
+	    
+	    // first run this controller's AirFilters
+	    if(Reflect.hasField(this_class, "before_filter")){
+  	    var filter:AirFilter = Reflect.field(this_class, "before_filter");
+  /*      throw filter.except;*/
 
-      for(action in filter.actions){
-        if(positive_return){
-          if(filter.except != null && Lambda.has(filter.except, controller.action) ){
-            continue;
-          }
-          if(filter.only != null && !Lambda.has(filter.only, controller.action )){
-            continue;
-          }
-          if(Reflect.callMethod(controller, action, [])){
-            continue;
-          }else{
-            positive_return = false;
-            break;
+        for(action in filter.actions){
+          if(positive_return){
+            if(filter.except != null && Lambda.has(filter.except, controller.action) ){
+              continue;
+            }
+            if(filter.only != null && !Lambda.has(filter.only, controller.action )){
+              continue;
+            }
+            if(Reflect.callMethod(controller, action, [])){
+              continue;
+            }else{
+              positive_return = false;
+              break;
+            }
           }
         }
+
       }
-      
-    }
-    return positive_return;
-	}
+  	  
+	    // next traverse parent classes until AirFilters (TODO change this behavior when they are instance members)
+	    
+	    var parent_class = Type.getSuperClass(this_class);
+	    while(parent_class != null && parent_class != AeroController){
+	      
+	      if(Reflect.hasField(parent_class, "before_filter")){
+    	    var filter:AirFilter = Reflect.field(parent_class, "before_filter");
+    /*      throw filter.except;*/
+
+          for(action in filter.actions){
+            if(positive_return){
+              if(filter.except != null && Lambda.has(filter.except, controller.action) ){
+                continue;
+              }
+              if(filter.only != null && !Lambda.has(filter.only, controller.action )){
+                continue;
+              }
+              if(Reflect.callMethod(controller, action, [])){
+                continue;
+              }else{
+                positive_return = false;
+                break;
+              }
+            }
+          }
+
+        }
+        
+	      parent_class = Type.getSuperClass(parent_class);
+	    }
+	    
+	    return positive_return;
+	    
+	  }else{
+	    throw "Cannot run AirFilters on class that does not subclass AeroController";
+	    return false;
+	  }
+  }
 }
