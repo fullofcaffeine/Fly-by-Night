@@ -4,6 +4,7 @@
 */
 import php.FileSystem;
 import php.Web;
+
 class AeroController
 {
   public var name: String;
@@ -13,9 +14,11 @@ class AeroController
   public var helper: AeroHelper;
   public var params: Hash<String>;
   public var obj_params: Hash<String>;
+  public var route: Route;
   
-  public function new( action:String, params:Hash<String> )
+  public function new( action:String, params:Hash<String>, ?route:Route = null )
   {
+    this.route = route;
     name = Type.getClassName(Type.getClass(this)).substr(12); // controller.
     this.action = action;
     content = new Hash<Dynamic>();
@@ -77,4 +80,79 @@ class AeroController
         if(controller.view != null) controller.view.render();*/
   }
 
+
+  /*
+	
+	  If any filter returns false, the action requested will not run
+	  
+	*/
+	public static inline function runBeforeFilters( controller:Dynamic ):Bool
+	{
+	  var positive_return = true;
+	  var this_class = Type.getClass(controller);
+	  
+	  if(Std.is(controller, AeroController)){
+	    
+	    // first run this controller's AirFilters
+	    if(Reflect.hasField(this_class, "before_filter")){
+  	    var filter:AirFilter = Reflect.field(this_class, "before_filter");
+  /*      throw filter.except;*/
+
+        for(action in filter.actions){
+          if(positive_return){
+            if(filter.except != null && Lambda.has(filter.except, controller.action) ){
+              continue;
+            }
+            if(filter.only != null && !Lambda.has(filter.only, controller.action )){
+              continue;
+            }
+            if(Reflect.callMethod(controller, action, [])){
+              continue;
+            }else{
+              positive_return = false;
+              break;
+            }
+          }
+        }
+
+      }
+  	  
+	    // next traverse parent classes until AirFilters (TODO change this behavior when they are instance members)
+	    
+	    var parent_class = Type.getSuperClass(this_class);
+	    while(parent_class != null && parent_class != AeroController){
+	      
+	      if(Reflect.hasField(parent_class, "before_filter")){
+    	    var filter:AirFilter = Reflect.field(parent_class, "before_filter");
+    /*      throw filter.except;*/
+
+          for(action in filter.actions){
+            if(positive_return){
+              if(filter.except != null && Lambda.has(filter.except, controller.action) ){
+                continue;
+              }
+              if(filter.only != null && !Lambda.has(filter.only, controller.action )){
+                continue;
+              }
+              if(Reflect.callMethod(controller, action, [])){
+                continue;
+              }else{
+                positive_return = false;
+                break;
+              }
+            }
+          }
+
+        }
+        
+	      parent_class = Type.getSuperClass(parent_class);
+	    }
+	    
+	    return positive_return;
+	    
+	  }else{
+	    throw "Cannot run AirFilters on class that does not subclass AeroController";
+	    return false;
+	  }
+  }
 }

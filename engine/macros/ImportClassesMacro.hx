@@ -39,7 +39,8 @@ class ImportClassesMacro {
     var scheme_files = neko.FileSystem.readDirectory("./plot/schemes/");
     var schemes = new Array<String>();
     for(scheme_file_name in scheme_files){
-      schemes.push("import "+scheme_file_name.substr(0,-3)+";");
+      if(scheme_file_name != '.keep_fly-by-night')
+        schemes.push("import "+scheme_file_name.substr(0,-3)+";");
     }
     
     var imploded = schemes.join("\n");

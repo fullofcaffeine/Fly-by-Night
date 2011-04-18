@@ -9,6 +9,7 @@ import db.DBConnection;
 class AeroModel extends php.db.Object
 {
 /*  public var name: String;*/
+  public var id: Int;
   public var manager: Dynamic;
   public function new( )
   {
@@ -22,9 +23,29 @@ class AeroModel extends php.db.Object
 
   public function save( ):Bool
   {
-    this.insert();
-/*    this.update();*/
-    // to checks, validations, etc.
+    DBConnection.connection;
+    
+    if(find(Type.getClass(this),this.id) == null){ // new record
+      
+      // magic columns
+      if(Reflect.hasField(Type.getClass(this), "created_at")){
+        Reflect.setField(this, "created_at", Date.now());
+      }
+      if(Reflect.hasField(Type.getClass(this), "updated_at")){
+        Reflect.setField(this, "updated_at", Date.now());
+      }
+      
+      this.insert();
+    }else{
+      // magic columns
+      if(Reflect.hasField(Type.getClass(this), "updated_at")){
+        Reflect.setField(this, "updated_at", Date.now());
+      }
+      
+      this.update();
+    }
+    
+    // TODO FIXME do checks, validations, etc.
     return true;
   }
   
@@ -33,23 +54,32 @@ class AeroModel extends php.db.Object
     return true;
   }
   
-  public static inline function all( model:Dynamic, ?conditions:String ):List<Dynamic>
+  public static inline function all( model:Dynamic, ?conditions:String, ?order:String ):List<Dynamic>
   {
     DBConnection.connection;
     
     var class_name = Type.getClassName(model);
     var result:List<Dynamic> = new List<Dynamic>();
     if(Type.getSuperClass(model) == AeroModel){
-      
       var manager = new Manager(cast Type.resolveClass(class_name));
-      result = manager.all(false);
-/*      result = manager.objects("SELECT * FROM posts", false);*/
+/*      result = manager.all(false);*/
+      result = manager.objects("SELECT * FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions+" "+order, false);
     }
     return result;
   }
-  public static inline function find( model:Dynamic, s:String ):Void
+  public static inline function find( model:Dynamic, id:Int ):Dynamic
   {
-    trace(model + " : " + s);
+    DBConnection.connection;
+    
+    var class_name = Type.getClassName(model);
+    var result:Object = null;
+    if(Type.getSuperClass(model) == AeroModel){
+      
+      var manager = new Manager(cast Type.resolveClass(class_name));
+      result = manager.get(id);
+/*      result = manager.objects("SELECT * FROM posts", false);*/
+    }
+    return result;
   }
   
 }

@@ -47,7 +47,7 @@ class AeroView
         }
       }else{
         if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext)){
-          layout = File.getContent(Settings.get("FBN_ROOT")+"app/views/layouts/application"+Utils.to_underscore(custom_layout)+type_ext);
+          layout = File.getContent(Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext);
         }else{
           throw "Layout "+custom_layout+" doesn't exist at: "+Settings.get("FBN_ROOT")+"/app/views/layouts/application"+Utils.to_underscore(custom_layout)+type_ext;
         }

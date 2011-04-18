@@ -9,6 +9,8 @@ import neko.db.Sqlite;
 import neko.db.Connection;
 import neko.db.ResultSet;
 import yaml_crate.YamlHX;
+import db.DBAdapters;
+import macros.ImportClassesMacro;
 class Engage
 {
   public static inline var SCHEME_VERSION_TABLE_NAME = "schemes_plotted";
@@ -138,26 +140,27 @@ is the directory ./plot/ writable?");
       var scheme:IScheme;
       var plotted = false;
       for(scheme_name in dir_list){
-        phase = scheme_name.substr(7,14);
+        if(scheme_name != ".keep_fly-by-night"){
+          phase = scheme_name.substr(7,14);
       
-        plotted = false;
+          plotted = false;
       
-        for(s in schemes_in_db){
-          if(s.phase == phase){
-            plotted = true;
-            break;
+          for(s in schemes_in_db){
+            if(s.phase == phase){
+              plotted = true;
+              break;
+            }
+          }
+      
+          if(!plotted){
+            class_name = scheme_name.substr(0,-3);
+            scheme = Type.createInstance(Type.resolveClass(class_name), [connection, adapter]);
+            Lib.print("\n==  "+class_name+": Running ==");
+            scheme.engage();
+            connection.request("INSERT INTO schemes_plotted (phase) VALUES ("+phase+") ");
+            Lib.print("\n==  "+class_name+": Engaged! ==");
           }
         }
-      
-        if(!plotted){
-          class_name = scheme_name.substr(0,-3);
-          scheme = Type.createInstance(Type.resolveClass(class_name), [connection, adapter]);
-          Lib.print("\n==  "+class_name+": Running ==");
-          scheme.engage();
-          connection.request("INSERT INTO schemes_plotted (phase) VALUES ("+phase+") ");
-          Lib.print("\n==  "+class_name+": Engaged! ==");
-        }
-      
       }
     
       connection.close();

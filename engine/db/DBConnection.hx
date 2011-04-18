@@ -59,7 +59,7 @@ class DBConnection
         var _database = (db_config.hasNode.database)? db_config.node.database.innerData : "";
         var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
         var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
-        var _socket = (db_config.hasNode.socket)? db_config.node.socket.innerData : "";
+        var _socket = (db_config.hasNode.socket && db_config.node.socket.innerData != "null")? db_config.node.socket.innerData : null;
         _connection = Mysql.connect({ 
             host : _host,
             port : _port,
