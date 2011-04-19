@@ -39,9 +39,10 @@ class Takeoff
     FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
     
     if(FlyByNightMixins._APP_CONFIG != null){
-      
-      if(Settings.set("FBN_SESSION_ENABLE", FlyByNightMixins.APP_CONFIG(null, "session.enable")) == "true"){
-        Settings.set("FBN_SESSION_PREFIX", FlyByNightMixins.APP_CONFIG(null,"session.prefix"));
+      Settings.set("FBN_SESSION_ENABLE", FlyByNightMixins.APP_CONFIG(null, "session.enable"));
+      if(Settings.get("FBN_SESSION_ENABLE") == "true"){
+        Settings.set("FBN_SESSION_NAME", FlyByNightMixins.APP_CONFIG(null,"session.name"));
+        Session.setName(Settings.get("FBN_SESSION_NAME"));
         Session.start();
       }
     }

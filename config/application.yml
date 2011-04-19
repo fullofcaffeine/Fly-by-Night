@@ -1,6 +1,6 @@
 session:
   enable: true
-  prefix: fbn_
+  name: fly_by_night
 site_title: The sparrow flies at midnight...
 common_date_format: %B %d, %Y
 short_date_format: %m/%d/%y
