@@ -1,0 +1,6 @@
+#!/bin/sh
+echo "No automated way to dump the crate, you gotta get your hands dirty."
+echo "1. edit the \033[1m.gitmodules\033[0m file and remove the submodule (3 lines)"
+echo "2. edit the\033[1m.git/config\033[0m file, remove the submodule lines (2 lines) if you see it"
+echo "3. remove the submodule entry in index/commit:"
+echo "\t \033[1mgit rm --cached path/to/crate || rm -R path/to/crate\033[0m"

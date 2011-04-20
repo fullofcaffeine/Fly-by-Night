@@ -1,0 +1,28 @@
+#!/bin/sh
+source=git://github.com/theRemix
+crate_names=()
+crate_i=0
+cargo_path=cargo
+while [ "$1" != "" ]; do
+  case $1 in
+    -s | --source )             shift
+                                source=$1
+                                source=`echo "${source}" | sed -e "s/\/*$//" `
+                                ;;
+    -p | --path | --cargo-path) shift
+                                cargo_path=$1
+                                cargo_path=`echo "${cargo_path}" | sed -e "s/\/*$//" `
+                                ;;
+    * )                         crate_names[crate_i]=$1
+                                crate_i+=1
+                                ;;
+  esac
+  shift
+done
+
+git submodule init
+
+for crate in ${crate_names[@]}
+do
+  git submodule add $source/$crate.git $cargo_path/$crate
+done
