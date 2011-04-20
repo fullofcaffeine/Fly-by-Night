@@ -1,4 +1,11 @@
 package aero_helpers;
+typedef OptionForSelect =
+{
+  var key:String;
+  var value:String;
+  /*var selected:Bool;*/
+}
+
 class Forms extends AeroHelper
 {
 
@@ -240,6 +247,65 @@ class Forms extends AeroHelper
     return tag;
   }
   
+  public inline function select_field( attribute_name:String, options_for_select:String ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<select id='"+_id+"' name='"+_name+"'>\n"+
+              options_for_select+
+              "</select>";
+              
+    return tag;
+  }
+  
+  /* type = button, reset, submit */
+  public inline function button( attribute_name:String, val:String, ?type:String = 'button', ?options:String = "" ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<button id='"+_id+"' name='"+_name+"' type='"+type+"' "+options+">"+val+"</button>";
+              
+    return tag;
+  }
+  
+  
+  
+  
+  
+  public static inline function options_for_select( options_list:Iterable<Dynamic>, ?value:String = "key", ?display:String = "value", ?selected:String = "" ):String
+  {
+    var items = new Array<String>();
+    var item = "";
+    for(o in options_list){
+      if(Reflect.hasField(o,value)){
+        item = "<option value='"+Reflect.field(o,value)+"'";
+        if(selected != ""){
+          if(Reflect.field(o,value) == selected){
+            item += " selected='selected'";
+          }
+        }else if(Reflect.hasField(o,"selected") && Reflect.field(o,"selected") == true){
+          item += " selected='selected'";
+        }
+        item += ">";
+        if(Reflect.hasField(o,display)){
+          item += Reflect.field(o,display);
+        }
+        item += "</option>";
+      }
+      items.push(item);
+    }
+    return items.join("\n");
+  }
+  
+  
   
   
   public inline function getInputIndex( obj:String ):Int
@@ -251,5 +317,24 @@ class Forms extends AeroHelper
     input_keys.set(obj, i);
     return i;
   }
+  
+  
+  
+  
+  /* requires JQuery UI */
+  public inline function date_picker( attribute_name:String, ?format:String = 'yy-mm-dd' ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<input id='"+_id+"' type='text' name='"+_name+"' />
+              <script type='text/javascript'>$(function(){ $('#"+_id+"').datepicker({dateFormat:'"+format+"'})});</script>";
+    return tag;
+  }
+  
+  
   
 }
