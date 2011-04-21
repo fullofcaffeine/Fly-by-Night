@@ -9,7 +9,7 @@ typedef OptionForSelect =
 class Forms extends AeroHelper
 {
 
-  private var input_keys: Hash<Int>;
+  private static var input_keys: Hash<Int>;
   public function new(c:AeroController)
   {
     super(c);
@@ -72,7 +72,7 @@ class Forms extends AeroHelper
               "<input id='"+_id+"' type='password' name='"+_name+"' value='"+val+"' />";
     return tag;
   }
-  public inline function textarea_field_tag( obj:String, attribute_name:String ):String
+  public static inline function textarea_field_tag( obj:String, attribute_name:String ):String
   {
     obj = Utils.to_underscore(obj);
     var _id = obj+"_"+Utils.to_underscore(attribute_name);
@@ -181,24 +181,7 @@ class Forms extends AeroHelper
   public inline function textarea_field( attribute_name:String ):String
   {
     var obj = Utils.to_underscore(Utils.singularize(controller.name));
-    var _id = obj+"_"+Utils.to_underscore(attribute_name);
-    var input_index = getInputIndex(obj);
-    var _name = obj+"["+input_index+"]";
-    
-    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<textarea id='"+_id+"' name='"+_name+"' cols='40' rows='10'></textarea>";
-    return tag;
-  }
-  public inline function textarea_field_val( attribute_name:String, val:String ):String
-  {
-    var obj = Utils.to_underscore(Utils.singularize(controller.name));
-    var _id = obj+"_"+Utils.to_underscore(attribute_name);
-    var input_index = getInputIndex(obj);
-    var _name = obj+"["+input_index+"]";
-    
-    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<textarea id='"+_id+"' name='"+_name+"' cols='40' rows='10'>"+val+"</textarea>";
-    return tag;
+    return textarea_field_tag(obj, attribute_name);
   }
   
   public inline function checkbox_field( attribute_name:String ):String
@@ -308,7 +291,7 @@ class Forms extends AeroHelper
   
   
   
-  public inline function getInputIndex( obj:String ):Int
+  private static inline function getInputIndex( obj:String ):Int
   {
     var i = 0;
     if(input_keys.exists(obj)){
