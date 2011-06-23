@@ -3,8 +3,8 @@ class Sessions extends controllers.Application
 {
 	public function login():Void{
     if(
-      obj_params.get("username") == "admin" &&
-      obj_params.get("password") == "admin"
+      obj_params.get("username") == APP_CONFIG("admin.username") &&
+      haxe.Md5.encode(obj_params.get("password")) == APP_CONFIG("admin.password")
     ){
       Session.set("user","admin");
       redirect_to( Routes.root.path() );

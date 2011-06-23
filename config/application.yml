@@ -1,6 +1,9 @@
 session:
   enable: true
   name: fly_by_night
+admin:
+  username: admin
+  password: 21232f297a57a5a743894a0e4a801fc3
 site_title: The sparrow flies at midnight...
 common_date_format: %B %d, %Y
 short_date_format: %m/%d/%y
