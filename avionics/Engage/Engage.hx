@@ -23,9 +23,9 @@ Egages all schemes that have not been executed.
 
 Default Environment is 'development' 
 
-Usage:    neko ./autopilot/engage.n
-Same as:  neko ./autopilot/engage.n development
-Other:    neko ./autopilot/engage.n production
+Usage:    neko ./autopilot/engage
+Same as:  neko ./autopilot/engage development
+Other:    neko ./autopilot/engage production
 
 ");
   }
@@ -101,7 +101,7 @@ is the directory ./plot/ writable?");
           database : _database,
           user : _user,
           pass : _pass,
-          socket : _socket
+          socket : null // neko + mysql5 + socket = bad
       });
     }
 
