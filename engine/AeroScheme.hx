@@ -20,7 +20,7 @@ import db.DBAdapters;
 class AeroScheme
 {
 
-  public static inline var GENERIC_TEMPLATE = "// scheme devised by ./autopilot/devise.n
+  public static inline var GENERIC_TEMPLATE = "// scheme devised by ./autopilot/devise
 class %NAME% extends AeroScheme, implements IScheme{
   public function engage():Void
   {
@@ -31,7 +31,7 @@ class %NAME% extends AeroScheme, implements IScheme{
     
   }
 }";
-  public static inline var CREATE_TABLE_TEMPLATE = "// scheme devised by ./autopilot/devise.n
+  public static inline var CREATE_TABLE_TEMPLATE = "// scheme devised by ./autopilot/devise
 class %NAME% extends AeroScheme, implements IScheme{
   public function engage():Void
   {
@@ -99,10 +99,27 @@ timestamps
     
   }
   
-  private inline function build_column( f:Fast ):String
+  private inline function add_column( tablename:String, yaml_str:String  ):Void
   {
-    var column_name = f.name;
-    var column_type = null;
+    // check if table exists, throw error if it does
+    
+    var column_yaml = YamlHX.read(yaml_str);
+    var q = "";
+    for(c in column_yaml.elements){ // should just be one
+      Lib.print("\n --  Adding Column '"+c.name+"' to '"+tablename+"' --");
+
+      // query
+      q = "ALTER TABLE "+tablename+" ADD COLUMN "+build_column(c);
+    }
+    
+    connection.request(q);
+    Lib.print("\n -- Success! "+tablename+" created! --");
+  }
+  
+  private  function build_column( f:Fast ):String
+  {
+    var column_name = "`"+f.name+"`";
+    var column_type = "";
     if(f.hasNode.type){
       column_type = f.node.type.innerData;
     }else if(!f.elements.hasNext()){
@@ -110,11 +127,13 @@ timestamps
     }
     
     // check if column_type is valid
-    if(!Reflect.hasField(SchemeDataType, column_type.toUpperCase())){
+    if(column_type == ""){
+      throw "Data Type for '"+column_name+"' is Blank!.\nSupported data types are "+Type.getEnumConstructs(SchemeDataType);
+    }else if(!Reflect.hasField(SchemeDataType, column_type.toUpperCase())){
       throw "'"+column_type.toUpperCase()+"' is not a valid SchemeDataType.\nSupported data types are "+Type.getEnumConstructs(SchemeDataType);
     }
     
-    if(column_type == "string" && db_adapter == DBAdapters.mysql){
+    if(column_type.toUpperCase() == "STRING" && db_adapter == DBAdapters.mysql){
       column_type = "VARCHAR";
     }
     
@@ -141,9 +160,9 @@ timestamps
     var auto_increment:String;
     if(f.hasNode.auto_increment){
       if(db_adapter == DBAdapters.sqlite3)
-        auto_increment = "AUTOINCRMEENT ";
+        auto_increment = "AUTOINCREMENT ";
       else
-        auto_increment = "AUTO_INCRMEENT ";
+        auto_increment = "AUTO_INCREMENT ";
     }else{
       auto_increment = "";
     }
