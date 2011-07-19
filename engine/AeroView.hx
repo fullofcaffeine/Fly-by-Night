@@ -59,10 +59,10 @@ class AeroView
           throw "Default Action template for "+controller.action+" not found at "+Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+controller.action+type_ext;
         }
       }else{
-        if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+custom_template+type_ext)){
-          template = File.getContent(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+custom_template+type_ext);
+        if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext)){
+          template = File.getContent(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext);
         }else{
-          throw "Template "+custom_template+" doesn't exist at: "+Settings.get("FBN_ROOT")+"app/views/layouts/application"+Utils.to_underscore(custom_template)+type_ext;
+          throw "Template "+custom_template+" doesn't exist at: "+Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_template)+type_ext;
         }
       }
       if(custom_content == null){
