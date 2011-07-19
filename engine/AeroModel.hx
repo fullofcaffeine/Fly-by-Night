@@ -8,12 +8,14 @@ import php.db.Manager;
 import db.DBConnection;
 class AeroModel extends php.db.Object
 {
+/*  public var name: String;*/
   public var id: Int;
+  public var manager: Dynamic;
   public function new( )
   {
     DBConnection.connection;
 /*    name = Type.getClassName(Type.getClass(this)).substr(8); // models.*/
-    __manager__ = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
+    manager = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
     
     super();
       
