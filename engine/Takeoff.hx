@@ -25,10 +25,13 @@ class Takeoff
 		// env
 #if test
     Settings.set("FBN_ENV", "test");
+    Settings.set("ATMOSPHERE", "test"); // alias
 #elseif production
     Settings.set("FBN_ENV", "production");
+    Settings.set("ATMOSPHERE", "production"); // alias
 #else // development
     Settings.set("FBN_ENV", "development");
+    Settings.set("ATMOSPHERE", "development"); // alias
 #end
     
     // set FBN_ROOT
