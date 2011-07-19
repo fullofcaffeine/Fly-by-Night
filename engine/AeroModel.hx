@@ -89,6 +89,22 @@ class AeroModel extends php.db.Object
     return result;
   }
   
+  public static inline function count( model:Dynamic, ?conditions:String ):Int
+  {
+    DBConnection.connection;
+    
+    var class_name = Type.getClassName(model);
+    var result:Dynamic;
+    var count = 0;
+    if(Type.getSuperClass(model) == AeroModel){
+      var manager = new Manager(cast Type.resolveClass(class_name));
+/*      result = manager.all(false);*/
+      result = manager.result("SELECT COUNT(*) as `count` FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions);
+      count = result.count;
+    }
+    return count;
+  }
+  
   public override function toString(  ):String
   {
     var out = Type.getClass(this) + " => {\n";
