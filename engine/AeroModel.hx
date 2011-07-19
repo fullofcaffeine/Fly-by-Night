@@ -47,8 +47,17 @@ class AeroModel extends php.db.Object
     return true;
   }
   
-  public function destroy( ):Bool
+  public static inline function destroy( model:Dynamic, id:Int ):Bool
   {
+    DBConnection.connection;
+    
+    var class_name = Type.getClassName(model);
+    if(Type.getSuperClass(model) == AeroModel){
+      
+      var manager = new Manager(cast Type.resolveClass(class_name));
+      manager.delete({id : id});
+    }
+    
     return true;
   }
   
