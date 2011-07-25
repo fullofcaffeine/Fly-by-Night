@@ -1,6 +1,11 @@
 /*
   To see a full list of auto imported classes for all subclasses of AeroModel
   See RunwayMacros.PREPEND_TO_MODEL
+  
+  
+  TODO: add exists() get()
+  TODO: add dynamic getters (through macros?) for strings, then use Utils.strip_slashes
+  
 */
 import php.FileSystem;
 import php.db.Object;
@@ -63,16 +68,28 @@ class AeroModel extends php.db.Object
     return true;
   }
   
-  public static inline function all( model:Dynamic, ?conditions:String, ?order:String ):List<Dynamic>
+  public static inline function all( model:Dynamic, ?conditions:String, ?order:String, ?limit:Int = -1, ?offset:Int = -1):List<Dynamic>
   {
     DBConnection.connection;
     
     var class_name = Type.getClassName(model);
     var result:List<Dynamic> = new List<Dynamic>();
+    var _limit = "";
+    if(limit >= 0){
+      _limit = "LIMIT "+Std.string(limit);
+    }
+    var _offset = "";
+    if(offset >= 0){
+      _offset = "OFFSET "+Std.string(offset);
+    }
+    var _order = "";
+    if(order != null){
+      _order = "ORDER BY "+order;
+    }
     if(Type.getSuperClass(model) == AeroModel){
       var manager = new Manager(cast Type.resolveClass(class_name));
 /*      result = manager.all(false);*/
-      result = manager.objects("SELECT * FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions+" "+order, false);
+      result = manager.objects("SELECT * FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions+" "+_order+" "+_limit+" "+_offset, false);
     }
     return result;
   }
