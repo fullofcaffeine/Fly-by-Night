@@ -170,7 +170,14 @@ the schemes filesystem looks like this
 ### Create Table
 
     create_table("table_name", {option:value}, 'yaml formatted column config');
+    
+    
+## Crates .cr8 packages  
 
+/autopilot/load_crate haml.cr8
+/autopilot/load_crate theRemix/yaml.cr8
+
+installs git submodules into /cargo/ directory
 
 ## files structure
 
