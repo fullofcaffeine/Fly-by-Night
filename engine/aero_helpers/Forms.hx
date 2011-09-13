@@ -58,7 +58,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+val+"' />";
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
     return tag;
   }
   public inline function password_field_tag( obj:String, attribute_name:String, val:String ):String
@@ -69,7 +69,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='password' name='"+_name+"' value='"+val+"' />";
+              "<input id='"+_id+"' type='password' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
     return tag;
   }
   public inline function textarea_field_tag( obj:String, attribute_name:String ):String
@@ -129,7 +129,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='hidden' name='"+_name+"' value='"+val+"' />";
+              "<input id='"+_id+"' type='hidden' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
     return tag;
   }
   
@@ -162,7 +162,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+val+"' />";
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
     return tag;
   }
   
@@ -197,7 +197,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<textarea id='"+_id+"' name='"+_name+"' cols='40' rows='10'>"+val+"</textarea>";
+              "<textarea id='"+_id+"' name='"+_name+"' cols='40' rows='10'>"+Utils.strip_input_val(val)+"</textarea>";
     return tag;
   }
   
@@ -243,7 +243,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='hidden' name='"+_name+"' value='"+val+"' />";
+              "<input id='"+_id+"' type='hidden' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
     return tag;
   }
   

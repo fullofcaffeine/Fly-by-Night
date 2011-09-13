@@ -13,11 +13,36 @@ class Utils
   "The rooster crows at midnight.",
   "The bird is in the oven."
   ];
+  public static inline function strip_slashes( backslashed:String ):String
+  {
+    var word = backslashed;
+#if php
+    untyped __php__("$word = stripslashes((string)$backslashed)");
+#end
+    return word;
+  }
+  public static inline function strip_input_val( input_val:String ):String
+  {
+    return strip_slashes(input_val).split("<").join("&lt;").split(">").join("&gt;").split("'").join("&#039;").split('"').join("&quot;");
+  }
   public static inline function to_underscore( camelCasedWord:String ):String
   {
-    var word = camelCasedWord.split(" ").join("_");
+    var word = strip_slashes(camelCasedWord).split(" ").join("_").split("\"").join("").split("\'").join("");
     var r = ~/(.)([A-Z])/g;
     return(r.replace(word,"$1_$2").toLowerCase());
+  }
+  /**
+  Escape HTML special characters of the string.
+  **/
+  public static function htmlEscape( s : String ) : String {
+    return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;").split("'").join("&#039;").split('"').join("&quot;");
+  }
+
+  /**
+  Unescape HTML special characters of the string.
+  **/
+  public #if php inline #end static function htmlUnescape( s : String ) : String {
+  return s.split("&gt;").join(">").split("&lt;").join("<").split("&amp;").join("&").split("&#039;").join("'").split("&quot;").join('"');
   }
   public static inline function toCamelCase( underscored_word:String ):String
   {
