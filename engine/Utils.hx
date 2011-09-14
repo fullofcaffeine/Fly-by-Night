@@ -79,8 +79,9 @@ class Utils
   {
     // need to grab rails' inflections
     plural = StringTools.trim(plural);
-    if(StringTools.endsWith(plural, "s")) return plural.substr(0,-1);
-    else return plural;
+    if(StringTools.endsWith(plural, "s")) plural = plural.substr(0,-1);
+    if(StringTools.endsWith(plural, "ie")) plural = plural.substr(0,-2)+"y";
+    return plural;
   }
   public static inline function pluralize( singular:String ):String
   {

@@ -23,7 +23,7 @@ class AeroController
     this.action = action;
     content = new Hash<Dynamic>();
     this.params = params;
-    var default_obj_name = Utils.singularize(name.toLowerCase());
+    var default_obj_name = Utils.singularize(Utils.to_underscore(name).toLowerCase());
     obj_params = getObjParams(default_obj_name);
     
     if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/helpers/"+name+".hx")){
