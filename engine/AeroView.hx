@@ -36,33 +36,41 @@ class AeroView
   
   public function render( ?custom_layout:String, ?custom_template:String, ?custom_content:Hash<Dynamic>, ?custom_helper:AeroHelper ):Void
   {
+    var layout_filename, template_filename = "";
     if(!rendered){
       if(custom_layout == null){
-        if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+type_ext)){
-          layout = File.getContent(Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+type_ext);
-        }else if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/layouts/application"+type_ext)){
-          layout = File.getContent(Settings.get("FBN_ROOT")+"app/views/layouts/application"+type_ext);
+        layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+type_ext;
+        if(FileSystem.exists(layout_filename)){
+          layout = File.getContent(layout_filename);
         }else{
-          throw "Default Layout is missing at: "+Settings.get("FBN_ROOT")+"app/views/layouts/application"+type_ext;
+          layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/application"+type_ext;
+          if(FileSystem.exists(layout_filename)){
+            layout = File.getContent(layout_filename);
+          }else{
+            throw "Default Layout is missing at: "+layout_filename;
+          }
         }
       }else{
-        if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext)){
-          layout = File.getContent(Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext);
+        layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext;
+        if(FileSystem.exists(layout_filename)){
+          layout = File.getContent(layout_filename);
         }else{
-          throw "Layout "+custom_layout+" doesn't exist at: "+Settings.get("FBN_ROOT")+"/app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext;
+          throw "Layout "+custom_layout+" doesn't exist at: "+layout_filename;
         }
       }
       if(custom_template == null){
-        if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+controller.action+type_ext)){
-          template = File.getContent(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+controller.action+type_ext);
+        template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+controller.action+type_ext;
+        if(FileSystem.exists(template_filename)){
+          template = File.getContent(template_filename);
         }else{
-          throw "Default Action template for "+controller.action+" not found at "+Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+controller.action+type_ext;
+          throw "Default Action template for "+controller.action+" not found at "+template_filename;
         }
       }else{
-        if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext)){
-          template = File.getContent(Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext);
+       template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext;
+        if(FileSystem.exists(template_filename)){
+          template = File.getContent(template_filename);
         }else{
-          throw "Template "+custom_template+" doesn't exist at: "+Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext;
+          throw "Template "+custom_template+" doesn't exist at: "+template_filename;
         }
       }
       if(custom_content == null){
@@ -76,8 +84,8 @@ class AeroView
         helper = custom_helper;
       }
       
-      content.set("yield",HamlHX.haml2html(template, content, helper)); // page helper
-      Lib.print( HamlHX.haml2html(layout, content, helper) );
+      content.set("yield",HamlHX.haml2html(template, template_filename, content, helper)); // page helper
+      Lib.print( HamlHX.haml2html(layout, layout_filename, content, helper) );
       
       rendered = true;
     }
