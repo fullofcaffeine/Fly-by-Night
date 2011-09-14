@@ -50,6 +50,9 @@ class AeroView
             throw "Default Layout is missing at: "+layout_filename;
           }
         }
+      }else if(custom_layout == "false"){
+        layout_filename = "[none]";
+        layout = "= yield";
       }else{
         layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext;
         if(FileSystem.exists(layout_filename)){
