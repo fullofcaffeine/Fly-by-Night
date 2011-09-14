@@ -29,7 +29,8 @@ class Utils
   {
     var word = strip_slashes(camelCasedWord).split(" ").join("_").split("\"").join("").split("\'").join("");
     var r = ~/(.)([A-Z])/g;
-    return(r.replace(word,"$1_$2").toLowerCase());
+    word = r.replace(word,"$1_$2").toLowerCase();
+    return(word.split("__").join("_"));
   }
   /**
   Escape HTML special characters of the string.
