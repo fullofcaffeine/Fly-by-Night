@@ -53,19 +53,11 @@ class AeroModel extends php.db.Object
     // TODO FIXME do checks, validations, etc.
     return true;
   }
-  
-  public static inline function destroy( model:Dynamic, id:Int ):Bool
+  public function destroy():Void
   {
-    DBConnection.connection;
-    
-    var class_name = Type.getClassName(model);
-    if(Type.getSuperClass(model) == AeroModel){
-      
-      var manager = new Manager(cast Type.resolveClass(class_name));
-      manager.delete({id : id});
-    }
-    
-    return true;
+    // TODO add before_destroy
+    this.delete();
+    // TODO add after_destroy
   }
   
   public static inline function all( model:Dynamic, ?conditions:String, ?order:String, ?limit:Int = -1, ?offset:Int = -1):List<Dynamic>
