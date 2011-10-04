@@ -57,11 +57,13 @@ class Utils
   public static inline function titleize( words:String ):String
   {
     var tmp = to_underscore(words).split("_");
+    var out = new List<String>();
     for(t in tmp){
-      if(t != tmp[0] && !titleSkipCapitalize(t))
+      if(t == tmp[0] || !titleSkipCapitalize(t))
         t = capitalize(t);
+      out.add(t);
     }
-    return tmp.join(" ");
+    return out.join(" ");
   }
   private static inline function titleSkipCapitalize( word:String ):Bool
   {

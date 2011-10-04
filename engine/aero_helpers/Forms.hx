@@ -288,7 +288,7 @@ class Forms extends AeroHelper
       if(Reflect.hasField(o,value)){
         item = "<option value='"+Reflect.field(o,value)+"'";
         if(selected != ""){
-          if(Reflect.field(o,value) == selected){
+          if(Std.string(Reflect.field(o,value)) == selected){
             item += " selected='selected'";
           }
         }else if(Reflect.hasField(o,"selected") && Reflect.field(o,"selected") == true){
