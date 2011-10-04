@@ -1,3 +1,4 @@
+package models;using AeroModel; using FlyByNightMixins;/*LandingGear*/
 class Post extends AeroModel
 {
   public static var TABLE_NAME = "posts";
@@ -10,3 +11,4 @@ class Post extends AeroModel
     
   }
 }
+

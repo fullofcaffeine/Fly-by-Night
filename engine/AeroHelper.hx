@@ -1,6 +1,6 @@
 /*
   To see a full list of auto imported classes for all subclasses of AeroHelper
-  See RunwayMacros.PREPEND_TO_HELPER 
+  See LandingGearMacro.APPEND_TO_HELPER 
 */
 import php.FileSystem;
 import php.io.File;

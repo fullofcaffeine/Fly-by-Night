@@ -3,7 +3,7 @@ import php.Sys;
 import php.Session;
 import yaml_crate.YamlHX;
 import php.io.File;
-import macros.RunwayMacro;
+import macros.LandingGearMacro;
 import macros.RoutesMacro;
 import macros.ImportClassesMacro;
 import db.DBConnection;
@@ -79,7 +79,7 @@ class Takeoff
     
 		// convert  List<{ value : String, header : String}> to Hash<String>
 		
-	  RunwayMacro.stage();
+	  LandingGearMacro.stage();
 		
 		// write paths from routes.yml
 		RoutesMacro.write();
@@ -113,10 +113,6 @@ class Takeoff
                 php.Lib.print("</div>");
                 */
     
-    
-    
-    
-    RunwayMacro.restore();
 	  
 	  // close any db connections
 	  DBConnection.close();

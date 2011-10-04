@@ -1,6 +1,6 @@
 /*
   To see a full list of auto imported classes for all subclasses of AeroController
-  See RunwayMacros.PREPEND_TO_CONTROLLER 
+  See LandingGearMacro.APPEND_TO_CONTROLLER 
 */
 import php.FileSystem;
 import php.Web;
