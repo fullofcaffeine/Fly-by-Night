@@ -4,6 +4,12 @@ class Template
     haml : TemplateType.HAML,
     mtt : TemplateType.TEMPLO,
     xml : TemplateType.XML
+    
+    // future, (not sure if will do)
+    js : TemplateType.JAVASCRIPT,
+    jq : TemplateType.JQUERY,
+    json : TemplateType.JSON,
+    flash : TemplateType.FLASH, // bunch of swfs to load, least useful, most cool
   */
   public static var types(get_types, null):Hash<TemplateType>;
   private static inline function get_types():Hash<TemplateType>{
