@@ -25,6 +25,7 @@ class LandingGearMacro {
     var modified = false;
     var directory_contents = neko.FileSystem.readDirectory("./app/controllers/");
     for(controller_file_name in directory_contents){
+      if(!StringTools.startsWith(controller_file_name, ".")){
         code = neko.io.File.getContent('./app/controllers/'+controller_file_name);
         
         // StringTools.replace() might be faster?
@@ -43,53 +44,55 @@ class LandingGearMacro {
           file.writeString(newcode);
           file.close();
         }
-        
+      }
     }
 
     directory_contents = neko.FileSystem.readDirectory("./app/models/");
     for(model_file_name in directory_contents){
-      code = neko.io.File.getContent('./app/models/'+model_file_name);
-      
-      
-      lines = code.split('\n');
-      newcode = "";
-      for(line in lines){
-        if(StringTools.startsWith(StringTools.ltrim(line), "package models;") && !StringTools.endsWith(StringTools.rtrim(line),"/*LandingGear*/")){
-          line += APPEND_TO_MODEL;
-          modified = true;
+      if(!StringTools.startsWith(model_file_name, ".")){
+        code = neko.io.File.getContent('./app/models/'+model_file_name);
+
+
+        lines = code.split('\n');
+        newcode = "";
+        for(line in lines){
+          if(StringTools.startsWith(StringTools.ltrim(line), "package models;") && !StringTools.endsWith(StringTools.rtrim(line),"/*LandingGear*/")){
+            line += APPEND_TO_MODEL;
+            modified = true;
+          }
+          newcode += line+"\n";
         }
-        newcode += line+"\n";
+
+        if(modified){
+          file = neko.io.File.write('./app/models/'+model_file_name, false);
+          file.writeString(newcode);
+          file.close();
+        }
       }
-      
-      if(modified){
-        file = neko.io.File.write('./app/models/'+model_file_name, false);
-        file.writeString(newcode);
-        file.close();
-      }
-      
     }
     
     directory_contents = neko.FileSystem.readDirectory("./app/helpers/");
     for(helper_file_name in directory_contents){
-      code = neko.io.File.getContent('./app/helpers/'+helper_file_name);
-      
-      
-      lines = code.split('\n');
-      newcode = "";
-      for(line in lines){
-        if(StringTools.startsWith(StringTools.ltrim(line), "package helpers;") && !StringTools.endsWith(StringTools.rtrim(line),"/*LandingGear*/")){
-          line += APPEND_TO_HELPER;
-          modified = true;
+      if(!StringTools.startsWith(helper_file_name,".")){
+        code = neko.io.File.getContent('./app/helpers/'+helper_file_name);
+
+
+        lines = code.split('\n');
+        newcode = "";
+        for(line in lines){
+          if(StringTools.startsWith(StringTools.ltrim(line), "package helpers;") && !StringTools.endsWith(StringTools.rtrim(line),"/*LandingGear*/")){
+            line += APPEND_TO_HELPER;
+            modified = true;
+          }
+          newcode += line+"\n";
         }
-        newcode += line+"\n";
+
+        if(modified){
+          file = neko.io.File.write('./app/helpers/'+helper_file_name, false);
+          file.writeString(newcode);
+          file.close();
+        }
       }
-      
-      if(modified){
-        file = neko.io.File.write('./app/helpers/'+helper_file_name, false);
-        file.writeString(newcode);
-        file.close();
-      }
-      
     }
     
 

@@ -5,19 +5,25 @@ class ImportClassesMacro {
     var controller_files = neko.FileSystem.readDirectory("./app/controllers/");
     var controllers = new Array<String>();
     for(controller_file_name in controller_files){
-      controllers.push("import controllers."+controller_file_name.substr(0,-3)+";");
+      if(!StringTools.startsWith(controller_file_name, ".")){
+        controllers.push("import controllers."+controller_file_name.substr(0,-3)+";");
+      }
     }
     
     var model_files = neko.FileSystem.readDirectory("./app/models/");
     var models = new Array<String>();
     for(model_file_name in model_files){
-      models.push("import models."+model_file_name.substr(0,-3)+";");
+      if(!StringTools.startsWith(model_file_name, ".")){
+        models.push("import models."+model_file_name.substr(0,-3)+";");
+      }
     }
     
     var helper_files = neko.FileSystem.readDirectory("./app/helpers/");
     var helpers = new Array<String>();
     for(helper_file_name in helper_files){
-      helpers.push("import helpers."+helper_file_name.substr(0,-3)+";");
+      if(!StringTools.startsWith(helper_file_name, ".")){
+        helpers.push("import helpers."+helper_file_name.substr(0,-3)+";");
+      }
     }
     
     var imploded = "package macros;\n"+
@@ -39,8 +45,9 @@ class ImportClassesMacro {
     var scheme_files = neko.FileSystem.readDirectory("./plot/schemes/");
     var schemes = new Array<String>();
     for(scheme_file_name in scheme_files){
-      if(scheme_file_name != '.keep_fly-by-night')
+      if(!StringTools.startsWith(scheme_file_name, ".")){
         schemes.push("import "+scheme_file_name.substr(0,-3)+";");
+      }
     }
     
     var imploded = schemes.join("\n");
