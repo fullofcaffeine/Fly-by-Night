@@ -3,14 +3,36 @@
 -cp app
 -cp cargo
 
-
 -php deploy
 -main Takeoff
 
-# atmospheres  development | test | production
--D development
+# atmospheres  development | production
+-D production
 --no-inline
 
-# debugs  profile | stacktrace
+# debugs  profile, stacktrace
 # -D not implemented yet
 # -debug
+
+
+--next
+
+-cp engine
+-cp app
+-cp cargo
+-cp runway
+
+-neko runway/tests.n
+-main RunwayRunner
+
+--no-inline
+
+# automated tests via Runway
+-D engine
+-D cargo
+-D app
+
+# see engine/ViewsRunway.hx
+# -D views
+
+-cmd neko runway/tests.n >> blackbox/runway.log && rm runway/tests.n

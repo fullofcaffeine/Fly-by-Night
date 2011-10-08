@@ -22,11 +22,8 @@ class Takeoff
 		
 		/*    trace(php.Sys.environment());*/
 		
-		// env
-#if test
-    Settings.set("FBN_ENV", "test");
-    Settings.set("ATMOSPHERE", "test"); // alias
-#elseif production
+		// env   
+#if production
     Settings.set("FBN_ENV", "production");
     Settings.set("ATMOSPHERE", "production"); // alias
 #else // development
@@ -113,7 +110,7 @@ class Takeoff
                 php.Lib.print("</div>");
                 */
     
-	  
+  
 	  // close any db connections
 	  DBConnection.close();
 	  

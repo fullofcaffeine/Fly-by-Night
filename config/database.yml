@@ -5,7 +5,16 @@ development:
   database: fbn_development
   user: fbn_development
   pass: fbn_development
-  socket: /Applications/MAMP/tmp/mysql/mysql.sock
+  socket: null
+
+runway:
+  adapter: mysql
+  host: localhost
+  port: 3306
+  database: fbn_runway
+  user: fbn_development
+  pass: fbn_development
+  socket: null  
   
 sqlite3_sample:
   adapter: sqlite3
