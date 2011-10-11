@@ -23,7 +23,7 @@
 -cp runway
 
 -neko runway/tests.n
--main RunwayRunner
+-main runway.Runner
 
 --no-inline
 
@@ -31,6 +31,10 @@
 -D engine
 -D cargo
 -D app
+-D runway
+
+# enable log colors in terminal
+-D color
 
 # see engine/ViewsRunway.hx
 # -D views

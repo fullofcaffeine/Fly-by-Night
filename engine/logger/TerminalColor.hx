@@ -1,0 +1,24 @@
+package logger;
+enum TerminalColor
+{
+  DEFAULT_COLOR;
+  BLACK;
+  DARK_GRAY;
+  LIGHT_GRAY;
+  BLUE;
+  LIGHT_BLUE;
+  GREEN;
+  LIGHT_GREEN;
+  CYAN;
+  LIGHT_CYAN;
+  RED;
+  LIGHT_RED;
+  GREYBG_RED;
+  PURPLE;
+  LIGHT_PURPLE;
+  BROWN;
+  YELLOW;
+  WHITE;
+  REDBG_WHITE;
+  BLACKBG_WHITE;
+}
