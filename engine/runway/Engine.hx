@@ -1,8 +1,5 @@
 package runway;
-class Engine extends Unit, implements IRunway
+class Engine extends runway.Unit
 {
-  public function new()
-  {
-    super();
-  }
+  
 }

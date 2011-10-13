@@ -32,7 +32,7 @@
   
   crates are testable. if tests exist, they are in the file named Runway.hx
   ex. for haml_crate, the test class is /cargo/haml_crate/Runway.hx
-  
+  crate_name.Runway implements runway.IRunway
 
 */
 /*
@@ -87,8 +87,7 @@ class Runner
     #if engine
       print("\n[+++ Running Engine Tests +++]\n",TerminalColor.LIGHT_GRAY);
       start_timer();
-      runCase(new Engine());
-      
+      runCase(Type.createInstance(Type.resolveClass("runway.Engine"),[]));
 
       print("[--- Engine tests complete ---] "+get_time(),TerminalColor.LIGHT_GRAY);
     #end
@@ -178,7 +177,7 @@ class Runner
     return DateTools.format(Date.now(), DATE_FORMAT);
   }
   
-  function runCase( t:IRunway ) : Void 	{
+  private function runCase( t:IRunway ) : Void 	{
 		var old = haxe.Log.trace;
 		haxe.Log.trace = customTrace;
 
@@ -186,6 +185,7 @@ class Runner
 		var fields = Type.getInstanceFields(cl);
 
     print("Describing "+Type.getClassName(cl)+"\n", TerminalColor.LIGHT_CYAN);
+    t.beforeAll();
 		for ( f in fields ){
 			var fname = f;
 			var field = Reflect.field(t, f);
@@ -202,7 +202,7 @@ class Runner
 				t.currentTest = new Status();
 				t.currentTest.classname = Type.getClassName(cl);
 				t.currentTest.method = fname;
-				t.setup();
+				t.beforeEach();
 
 				try {
 					Reflect.callMethod(t, field, new Array());
@@ -225,10 +225,10 @@ class Runner
 					t.currentTest.backtrace = haxe.Stack.toString(haxe.Stack.exceptionStack());
 				}
 				result.add(t.currentTest);
-				t.tearDown();
+				t.afterEach();
 			}
 		}
-
+    t.afterAll();
 		Lib.println("\n");
 		haxe.Log.trace = old;
 	}
@@ -254,6 +254,9 @@ class Runner
   @:macro public static function compileRunwayClasses() : Expr
 	{
 	  var imports = new Array<String>();
+	  #if engine
+	    imports.push("import runway.Engine;");
+	  #end
 	  #if cargo
 	  var cargo_test_classes = neko.FileSystem.readDirectory("./cargo");
 	  for(crate_name in cargo_test_classes){

@@ -2,6 +2,8 @@ package runway;
 interface IRunway
 {
   public var currentTest : Status;
-  public function setup() : Void;
-	public function tearDown() : Void;
+  public function beforeAll() : Void;
+  public function beforeEach() : Void;
+	public function afterEach() : Void;
+	public function afterAll() : Void;
 }

@@ -2,9 +2,7 @@
 
 /engine/runway/Runner.hx runs the tests
 
-this class is a clone of haxe.unit.TestCase geared towards RSpec style unit tests
-
-test function names must start with "it_" as long as they have metadata set
+test function names must start with "it_" 
 
 */
 /*
@@ -34,64 +32,8 @@ test function names must start with "it_" as long as they have metadata set
 package runway;
 import haxe.PosInfos;
 
-class Unit implements haxe.Public
+class Unit extends Test
 {
-
-  /*
-    exact clone of haxe.unit.TestCase haxe 2.07
-  */
-  public var currentTest : Status;
-
-	public function new( )
-	{
-	
-	}
-
-	public function setup() : Void
-	{
-	
-	}
-
-	public function tearDown() : Void 
-	{
-	
-	}
-
-	private function print( v : Dynamic ) 
-	{
-		Runner.print(v);
-	}
-
-	private function assertTrue( b:Bool, ?c : PosInfos ) : Void 
-	{
-		currentTest.done = true;
-		if (b == false){
-			currentTest.success = false;
-			currentTest.error   = "expected true but was false";
-			currentTest.posInfos = c;
-			throw currentTest;
-		}
-	}
-
-	private function assertFalse( b:Bool, ?c : PosInfos ) : Void 
-	{
-		currentTest.done = true;
-		if (b == true){
-			currentTest.success = false;
-			currentTest.error   = "expected false but was true";
-			currentTest.posInfos = c;
-			throw currentTest;
-		}
-	}
-
-	private function assertEquals<T>( expected: T , actual: T,  ?c : PosInfos ) : Void 	
-	{
-		currentTest.done = true;
-		if (actual != expected){
-			currentTest.success = false;
-			currentTest.error   = "expected '" + expected + "' but was '" + actual + "'";
-			currentTest.posInfos = c;
-			throw currentTest;
-		}
-	}
+  public function new(){super();}
+  
 }

@@ -1,12 +1,9 @@
 /*
 
-macro: always include a test class in /runway named "RunwayRoutes.hx" with all paths in /config/routes.yml have their controller.actions created
-
 /engine/runway/Runner.hx runs the tests
 
-test function names do not have to start with "it_" 
-as long as they have metadata set (@route || (@controller, @action ?@params))
-function names that do start with "it_" are tested even if they have no metadata
+test function names must start with "it_" 
+or have metadata set (@route || (@controller, @action ?@params))
 
 */
 /*
@@ -36,8 +33,53 @@ function names that do start with "it_" are tested even if they have no metadata
 package runway;
 import haxe.PosInfos;
 
-class Integration extends Test
+class Test implements haxe.Public, implements IRunway
 {
-  public function new(){super();}
 
+  public var currentTest : Status;
+
+	public function new();
+
+	public function beforeAll() : Void;
+	public function beforeEach() : Void;
+	public function afterEach() : Void;
+	public function afterAll() : Void;
+
+	private function print( v : Dynamic ) 
+	{
+		Runner.print(v);
+	}
+
+	private function assertTrue( b:Bool, ?c : PosInfos ) : Void 
+	{
+		currentTest.done = true;
+		if (b == false){
+			currentTest.success = false;
+			currentTest.error   = "expected true but was false";
+			currentTest.posInfos = c;
+			throw currentTest;
+		}
+	}
+
+	private function assertFalse( b:Bool, ?c : PosInfos ) : Void 
+	{
+		currentTest.done = true;
+		if (b == true){
+			currentTest.success = false;
+			currentTest.error   = "expected false but was true";
+			currentTest.posInfos = c;
+			throw currentTest;
+		}
+	}
+
+	private function assertEquals<T>( expected: T , actual: T,  ?c : PosInfos ) : Void 	
+	{
+		currentTest.done = true;
+		if (actual != expected){
+			currentTest.success = false;
+			currentTest.error   = "expected '" + expected + "' but was '" + actual + "'";
+			currentTest.posInfos = c;
+			throw currentTest;
+		}
+	}
 }
