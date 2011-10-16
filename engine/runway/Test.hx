@@ -38,12 +38,12 @@ class Test implements haxe.Public, implements IRunway
 
   public var currentTest : Status;
 
-	public function new();
+	public function new(){}
 
-	public function beforeAll() : Void;
-	public function beforeEach() : Void;
-	public function afterEach() : Void;
-	public function afterAll() : Void;
+	public dynamic function beforeAll() : Void {}
+	public dynamic function beforeEach() : Void {}
+	public dynamic function afterEach() : Void {}
+	public dynamic function afterAll() : Void {}
 
 	private function print( v : Dynamic ) 
 	{

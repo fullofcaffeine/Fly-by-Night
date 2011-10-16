@@ -74,10 +74,12 @@ class Runner
 	
   public function new()
   {
+    // set FBN_ROOT
+    Settings.set("FBN_ROOT", neko.Sys.getCwd());
     Settings.set("FBN_ENV", "runway");
     Settings.set("ATMOSPHERE", "runway"); // alias
     
-    Runner.compileRunwayClasses();
+    macros.ImportClassesMacro.compileRunwayClasses();
     ImportRunways;
     
     result = new Result();
@@ -87,8 +89,14 @@ class Runner
     #if engine
       print("\n[+++ Running Engine Tests +++]\n",TerminalColor.LIGHT_GRAY);
       start_timer();
-      runCase(Type.createInstance(Type.resolveClass("runway.Engine"),[]));
-
+      
+      var engine_parts = FileSystem.readDirectory("./engine/runway/engine");
+      for(part in engine_parts){
+        if(!StringTools.startsWith(part, ".")){
+          runCase(Type.createInstance(Type.resolveClass('runway.engine.'+part.substr(0,-3)),[]));  
+        }
+      }
+      
       print("[--- Engine tests complete ---] "+get_time(),TerminalColor.LIGHT_GRAY);
     #end
     #if cargo
@@ -251,53 +259,5 @@ class Runner
     var runner = new Runner();
   }
   
-  @:macro public static function compileRunwayClasses() : Expr
-	{
-	  var imports = new Array<String>();
-	  #if engine
-	    imports.push("import runway.Engine;");
-	  #end
-	  #if cargo
-	  var cargo_test_classes = neko.FileSystem.readDirectory("./cargo");
-	  for(crate_name in cargo_test_classes){
-      if(!StringTools.startsWith(crate_name, ".")){
-        if(FileSystem.exists("./"+crate_name+"/Runway.hx")){
-           imports.push("import "+crate_name+".Runway;");
-        }
-      }
-    }
-	  #end
-	  
-	  #if app
-      var unit_test_classes = FileSystem.readDirectory("./runway/unit");
-      for(unit_test_class in unit_test_classes){
-        if(!StringTools.startsWith(unit_test_class, ".")){
-          imports.push("import unit."+unit_test_class.substr(0,-3)+";");
-        }
-      }
-      var integration_test_classes = FileSystem.readDirectory("./runway/integration");
-      for(integration_test_class in integration_test_classes){
-        if(!StringTools.startsWith("integration."+integration_test_class, ".")){
-          imports.push("import integration."+integration_test_class.substr(0,-3)+";");
-        }
-      }
-      #if views
-        var views_test_classes = FileSystem.readDirectory("./runway/views");
-        for(views_test_class in views_test_classes){
-          if(!StringTools.startsWith("views."+views_test_class, ".")){
-            imports.push("import views."+views_test_class.substr(0,-3)+";");
-          }
-        }
-      #end
-    #end
-    
-    var imploded = "package runway;\n"+imports.join("\n")+"\nclass ImportRunways{}";
-
-    var file = neko.io.File.write("./engine/runway/ImportRunways.hx", false);
-    file.writeString(imploded);
-    file.close();
-    
-    return { expr : EConst(CString(imploded)), pos : haxe.macro.Context.currentPos() }
-	}
 	
 }

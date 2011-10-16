@@ -16,6 +16,10 @@ runway:
   pass: fbn_development
   socket: null  
   
+runway_sqlite:
+  adapter: sqlite3
+  database: runway
+    
 sqlite3_sample:
   adapter: sqlite3
   database: development

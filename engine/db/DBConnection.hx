@@ -1,12 +1,22 @@
 package db;
 import db.DBAdapters;
 import yaml_crate.YamlHX;
+import haxe.xml.Fast;
+#if php
 import php.io.File;
 import php.FileSystem;
 import php.db.Connection;
 import php.db.Sqlite;
 import php.db.Mysql;
 import php.db.Manager;
+#elseif neko
+import neko.io.File;
+import neko.FileSystem;
+import neko.db.Connection;
+import neko.db.Sqlite;
+import neko.db.Mysql;
+import neko.db.Manager;
+#end
 class DBConnection
 {
   private static var _connection:Connection;
@@ -39,35 +49,9 @@ class DBConnection
       var adapter = Reflect.field(DBAdapters,db_config.node.adapter.innerData);
       
       if(adapter == DBAdapters.sqlite3){
-        if(!db_config.hasNode.database){
-          throw("ERROR! 'database' name is not set for sqlite3 adapter.
-  Fix it! at ./config/database.yml");
-          return null;
-        }
-        var database = db_config.node.database.innerData;
-
-        _connection = Sqlite.open(Settings.get('FBN_ROOT')+"./plot/"+database);
-      
-        if(!FileSystem.exists(Settings.get('FBN_ROOT')+"./plot/"+database)){
-          throw("ERROR creating sqlite3 database at ./plot/"+database+"
-  is the directory ./plot/ writable?");
-          return null;
-        }
+        _connection = sqlite_connection(db_config);
       }else{ // MYSQL
-        var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "";
-        var _port = (db_config.hasNode.port)? Std.parseInt(db_config.node.port.innerData) : 3306;
-        var _database = (db_config.hasNode.database)? db_config.node.database.innerData : "";
-        var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
-        var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
-        var _socket = (db_config.hasNode.socket && db_config.node.socket.innerData != "null")? db_config.node.socket.innerData : null;
-        _connection = Mysql.connect({ 
-            host : _host,
-            port : _port,
-            database : _database,
-            user : _user,
-            pass : _pass,
-            socket : _socket
-        });
+        _connection = mysql_connection(db_config);
       }
         
       Manager.cnx = _connection;
@@ -77,15 +61,51 @@ class DBConnection
     return _connection; }
   private static function set_connection( val:Connection ):Connection{ _connection = val; return _connection; }
   
-  /*public function new()
-    {
-      
-    }*/
+  private static inline function sqlite_connection( db_config:Fast ):Connection
+  {
+    var con:Connection = null;
+    if(!db_config.hasNode.database){
+      throw("ERROR! 'database' name is not set for sqlite3 adapter.
+Fix it! at ./config/database.yml");
+      return null;
+    }
+    var database = db_config.node.database.innerData;
+
+    con = Sqlite.open(Settings.get('FBN_ROOT')+"./plot/"+database);
+  
+    if(!FileSystem.exists(Settings.get('FBN_ROOT')+"./plot/"+database)){
+      throw("ERROR creating sqlite3 database at ./plot/"+database+"
+is the directory ./plot/ writable?");
+      return null;
+    }
+    return con;
+  }
+  private static inline function mysql_connection( db_config:Fast ):Connection
+  {
+    var con:Connection = null;
+    var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "";
+    var _port = (db_config.hasNode.port)? Std.parseInt(db_config.node.port.innerData) : 3306;
+    var _database = (db_config.hasNode.database)? db_config.node.database.innerData : "";
+    var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
+    var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
+    var _socket = (db_config.hasNode.socket && db_config.node.socket.innerData != "null")? db_config.node.socket.innerData : null;
+    con = Mysql.connect({ 
+        host : _host,
+        port : _port,
+        database : _database,
+        user : _user,
+        pass : _pass,
+        socket : _socket
+    });
+    return con;
+  }
+  
   public static function close(  ):Void
   {
     if(_connection != null){
       Manager.cleanup();
       _connection.close();
+      Manager.cnx = _connection = null;
     }
     
   }
