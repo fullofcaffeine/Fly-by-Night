@@ -1,4 +1,13 @@
 # FLy by Night build file 
+
+# Read routes file to make Routes enum
+-cp engine
+-cp cargo
+-neko autopilot/routes.n
+-main engine.macros.RoutesMacro
+-cmd neko autopilot/routes.n >> blackbox/routes_writer.log
+--next
+
 -cp engine
 -cp app
 -cp cargo

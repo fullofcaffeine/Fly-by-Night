@@ -6,3 +6,5 @@ plot/ImportSchemes.hx
 engine/macros/ImportClasses.hx
 engine/runway/ImportRunways.hx
 blackbox/*
+autopilot/routes.n
+plot/runway.sqlite3

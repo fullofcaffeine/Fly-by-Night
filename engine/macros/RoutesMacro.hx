@@ -2,10 +2,14 @@ package macros;
 import yaml_crate.YamlHX;
 import haxe.macro.Expr;
 class RoutesMacro {
+  
+  public static function main():Void{
+    write();
+  }
+  
   @:macro public static function write() : Expr {
     var imploded = "";
     if(neko.FileSystem.exists('./config/routes.yml')){
-      // check if config has db setup for env
       var routes_yml = YamlHX.read(neko.io.File.getContent('./config/routes.yml'));
       var names = new Array<String>();
       var name:String;
@@ -25,6 +29,11 @@ class RoutesMacro {
           names.push("destroy_"+name);
         }
       }
+      
+      #if runway
+        names.push("test_route_url");
+        names.push("test_route_path");
+      #end
       
       imploded = "enum Routes{\nroot;\n"+names.join(";\n")+";\n}";
 

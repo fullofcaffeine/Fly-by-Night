@@ -18,7 +18,7 @@ runway:
   
 runway_sqlite:
   adapter: sqlite3
-  database: runway
+  database: runway.sqlite3
     
 sqlite3_sample:
   adapter: sqlite3

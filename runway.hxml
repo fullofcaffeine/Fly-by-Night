@@ -1,3 +1,12 @@
+# Read routes file to make Routes enum
+-cp cargo
+-cp engine
+-neko autopilot/routes.n
+-D runway
+-main macros.RoutesMacro
+-cmd neko autopilot/routes.n >> blackbox/routes_writer.log
+--next
+
 -cp engine
 -cp app
 -cp cargo
