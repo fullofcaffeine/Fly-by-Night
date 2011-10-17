@@ -2,9 +2,13 @@
   To see a full list of auto imported classes for all subclasses of AeroController
   See LandingGearMacro.APPEND_TO_CONTROLLER 
 */
+#if php
 import php.FileSystem;
 import php.Web;
-
+#elseif neko
+import neko.FileSystem;
+import neko.Web;
+#end
 class AeroController
 {
   public var name: String;
@@ -41,8 +45,8 @@ class AeroController
   private inline function getParam( obj:String, key:String ):String
   {
     var val = "";
-	  var keys = php.Web.getParamValues(obj+"_keys");
-	  var vals = php.Web.getParamValues(obj);
+	  var keys = Web.getParamValues(obj+"_keys");
+	  var vals = Web.getParamValues(obj);
 	  
 	  if(keys != null && vals != null){
 	    var l = keys.length;
@@ -59,8 +63,8 @@ class AeroController
   private static inline function getObjParams( obj:String ): Hash<String>
 	{
 	  var h = new Hash<String>();
-	  var keys = php.Web.getParamValues(obj+"_keys");
-	  var vals = php.Web.getParamValues(obj);
+	  var keys = Web.getParamValues(obj+"_keys");
+	  var vals = Web.getParamValues(obj);
 	  if(keys != null && vals != null){
 	    var l = keys.length;
   	  for(i in 0...l){

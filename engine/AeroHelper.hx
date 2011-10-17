@@ -2,8 +2,13 @@
   To see a full list of auto imported classes for all subclasses of AeroHelper
   See LandingGearMacro.APPEND_TO_HELPER 
 */
+#if php
 import php.FileSystem;
 import php.io.File;
+#elseif neko
+import neko.FileSystem;
+import neko.io.File;
+#end
 import haml_crate.HamlHX;
 class AeroHelper
 {

@@ -1,6 +1,12 @@
+#if php
 import php.FileSystem;
 import php.io.File;
 import php.Lib;
+#elseif neko
+import neko.FileSystem;
+import neko.io.File;
+import neko.Lib;
+#end
 import haml_crate.HamlHX;
 class AeroView
 {

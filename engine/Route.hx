@@ -1,6 +1,10 @@
 import yaml_crate.YamlHX;
 import haxe.xml.Fast;
+#if php
 import php.io.File;
+#elseif neko
+import neko.io.File;
+#end
 class Route
 {
   public static var _routes_yml:YamlHX;
