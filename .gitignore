@@ -1,5 +1,5 @@
 FlyByNight.tmproj
-deploy/*
+deploy/lib
 /autopilot/engage.n
 /autopilot/devise.n
 /plot/ImportSchemes.hx
