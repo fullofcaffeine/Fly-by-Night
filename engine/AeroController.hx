@@ -26,6 +26,8 @@ class AeroController
     var default_obj_name = Utils.singularize(Utils.to_underscore(name).toLowerCase());
     obj_params = getObjParams(default_obj_name);
     
+    // this requires the hx files to be in /app/helpers i don't think i like this
+    // TODO check if class exists, instead of .hx source file.
     if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/helpers/"+name+".hx")){
       helper = Type.createInstance(Type.resolveClass("helpers."+name),[this]);
     }else if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/helpers/Application.hx")){
