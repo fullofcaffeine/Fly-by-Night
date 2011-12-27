@@ -19,6 +19,8 @@ class AeroView
   
   public function render_text( text:String, ?custom_layout:String ):Void
   {
+    var type_ext = ".haml"; // TODO cycle through default types for matching file
+    
     if(custom_layout != null){
       var layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext;
       if(FileSystem.exists(layout_filename)){
