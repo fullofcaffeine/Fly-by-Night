@@ -84,6 +84,18 @@ class Forms extends AeroHelper
     
     return tag;
   }
+  public inline function textarea_field_tag_val( obj:String, attribute_name:String, val:String ):String
+  {
+    obj = Utils.to_underscore(obj);
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<textarea id='"+_id+"' name='"+_name+"' cols='40' rows='10'>"+Utils.strip_input_val(val)+"</textarea>";
+    
+    return tag;
+  }
   
   /*
    * options
@@ -210,6 +222,18 @@ class Forms extends AeroHelper
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
               "<input id='"+_id+"' name='"+_name+"' type='checkbox' />";
+    return tag;
+  }
+  
+  public inline function checkbox_field_val( attribute_name:String, val:Int ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<input id='"+_id+"' name='"+_name+"' type='checkbox' "+((val==1)?"checked='checked'":"")+" />";
     return tag;
   }
   
