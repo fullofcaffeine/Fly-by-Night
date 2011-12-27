@@ -100,6 +100,20 @@ class AeroModel extends php.db.Object
     return result;
   }
   
+  public static inline function destroy_by_id( model:Dynamic, id:Int ):Bool
+  {
+    DBConnection.connection;
+    
+    var class_name = Type.getClassName(model);
+    if(Type.getSuperClass(model) == AeroModel){
+      
+      var manager = new Manager(cast Type.resolveClass(class_name));
+      manager.delete({id : id});
+    }
+    
+    return true;
+  }
+  
   public static inline function count( model:Dynamic, ?conditions:String ):Int
   {
     DBConnection.connection;
