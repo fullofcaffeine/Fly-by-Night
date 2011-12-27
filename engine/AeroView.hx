@@ -203,10 +203,13 @@ class AeroView
     var r:TemplateType;
     if(StringTools.endsWith(file_name, ".haml")){
       r = TemplateType.HAML;
-    }else if(StringTools.endsWith(file_name, ".mtt")){
-      r = TemplateType.TEMPLO;
-    }else if(StringTools.endsWith(file_name, ".xml")){
-      r = TemplateType.XML;
+      
+//    Not yet implemented
+//    }else if(StringTools.endsWith(file_name, ".mtt")){
+//      r = TemplateType.TEMPLO;
+//    }else if(StringTools.endsWith(file_name, ".xml")){
+//      r = TemplateType.XML;
+
     }else{
       throw "Template Error! '"+file_name+"' is not one of "+Type.getEnumConstructs(TemplateType).toString();
     }
