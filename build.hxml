@@ -6,16 +6,21 @@
 -neko autopilot/routes.n
 -main engine.macros.RoutesMacro
 -cmd neko autopilot/routes.n >> blackbox/routes_writer.log
---next
+
+--next # compile app
 
 -cp engine
 -cp app
 -cp cargo
 
--php deploy
+-lib nodejs
+-lib nodejs-mongo
+
+-js haxenode.js
 -main Takeoff
 
 # atmospheres  development | production
+-D nodejs
 -D production
 --no-inline
 
@@ -24,7 +29,7 @@
 # -debug
 
 
---next
+--next # automated tests via Runway
 
 -cp engine
 -cp app
@@ -36,7 +41,6 @@
 
 --no-inline
 
-# automated tests via Runway
 -D engine
 -D cargo
 -D app
