@@ -1,5 +1,7 @@
 package controllers;using AeroModel; using AeroPath; using FlyByNightMixins;/*LandingGear*/
-import php.Session;
+#if php
+  import php.Session;
+#end
 class Sessions extends controllers.Application
 {
 	public function login():Void{
@@ -19,9 +21,11 @@ class Sessions extends controllers.Application
   }
 	public function logout( ):Void
   {
+    #if !nodejs
     if(Session.exists("user")){
       Session.remove("user");
     }
+    #end
     redirect_to( Routes.root.path() );
   }
 	

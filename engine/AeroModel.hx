@@ -7,11 +7,21 @@
   TODO: add dynamic getters (through macros?) for strings, then use Utils.strip_slashes
   
 */
-import php.FileSystem;
-import php.db.Object;
-import php.db.Manager;
+#if php
+  import php.FileSystem;
+  import php.db.Object;
+  import php.db.Manager;
+#elseif neko
+  import neko.FileSystem;
+  import neko.db.Object;
+  import neko.db.Manager;
+#elseif nodejs
+  class Object{}
+#end
+
 import db.DBConnection;
-class AeroModel extends php.db.Object
+
+class AeroModel extends Object
 {
 /*  public var name: String;*/
   public var id: Int;

@@ -4,10 +4,11 @@
 -cp engine
 -cp cargo
 -neko autopilot/routes.n
--main engine.macros.RoutesMacro
+-main macros.RoutesMacro
 -cmd neko autopilot/routes.n >> blackbox/routes_writer.log
 
---next # compile app
+--next
+# compile app
 
 -cp engine
 -cp app
@@ -16,7 +17,7 @@
 -lib nodejs
 -lib nodejs-mongo
 
--js haxenode.js
+-js server/haxenode.js
 -main Takeoff
 
 # atmospheres  development | production

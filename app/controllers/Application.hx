@@ -1,5 +1,9 @@
 package controllers;using AeroModel; using AeroPath; using FlyByNightMixins;/*LandingGear*/
-import php.Session;
+#if php
+  import php.Session;
+#elseif neko
+  import neko.Session;
+#end
 class Application extends AeroController
 {
 	public static var before_filter:AirFilter = {

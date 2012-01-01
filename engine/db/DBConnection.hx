@@ -1,26 +1,35 @@
 package db;
-import db.DBAdapters;
-import yaml_crate.YamlHX;
-import haxe.xml.Fast;
+
 #if php
-import php.io.File;
-import php.FileSystem;
-import php.db.Connection;
-import php.db.Sqlite;
-import php.db.Mysql;
-import php.db.Manager;
+  import php.io.File;
+  import php.FileSystem;
+  import php.db.Connection;
+  import php.db.Sqlite;
+  import php.db.Mysql;
+  import php.db.Manager;
 #elseif neko
-import neko.io.File;
-import neko.FileSystem;
-import neko.db.Connection;
-import neko.db.Sqlite;
-import neko.db.Mysql;
-import neko.db.Manager;
+  import neko.io.File;
+  import neko.FileSystem;
+  import neko.db.Connection;
+  import neko.db.Sqlite;
+  import neko.db.Mysql;
+  import neko.db.Manager;
+#elseif nodejs                 
+  typedef Connection = Dynamic;
 #end
+  
+  import db.DBAdapters;
+  import yaml_crate.YamlHX;
+  import haxe.xml.Fast;
+
+
 class DBConnection
 {
   private static var _connection:Connection;
   public static var connection(get_connection,set_connection):Connection;
+
+#if (php || neko)
+
   private static function get_connection():Connection{ 
     if (_connection == null){
       var env = Settings.get("FBN_ENV");
@@ -47,20 +56,29 @@ class DBConnection
       }
 
       var adapter = Reflect.field(DBAdapters,db_config.node.adapter.innerData);
-      
+            
       if(adapter == DBAdapters.sqlite3){
         _connection = sqlite_connection(db_config);
       }else{ // MYSQL
         _connection = mysql_connection(db_config);
       }
-        
+      
       Manager.cnx = _connection;
       Manager.initialize();
         
     }
     return _connection; }
-  private static function set_connection( val:Connection ):Connection{ _connection = val; return _connection; }
   
+  public static function close(  ):Void
+  {
+    if(_connection != null){
+      Manager.cleanup();
+      _connection.close();
+      Manager.cnx = _connection = null;
+    }
+    
+  }
+
   private static inline function sqlite_connection( db_config:Fast ):Connection
   {
     var con:Connection = null;
@@ -100,13 +118,31 @@ is the directory ./plot/ writable?");
     return con;
   }
   
-  public static function close(  ):Void
+#elseif nodejs
+  
+  private static function get_connection():Connection{ return _connection; }
+  
+  private static inline function mongodb_connection( db_config:Fast ):Void
   {
-    if(_connection != null){
-      Manager.cleanup();
-      _connection.close();
-      Manager.cnx = _connection = null;
+    var con:Connection = null;
+    if(!db_config.hasNode.database){
+      throw("ERROR! 'database' name is not set for mongodb connection.
+Fix it! at ./config/database.yml");
+      return null;
+    }
+    var database = db_config.node.database.innerData;
+
+    // MongoTools.create .load 
+    con = null; // TODO
+
+    if(con == null){
+      throw("ERROR cannot connect to mongodb database: "+database+"");
     }
     
   }
+  
+#end
+  
+  private static function set_connection( val:Connection ):Connection{ _connection = val; return _connection; }
+
 }

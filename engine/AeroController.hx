@@ -3,11 +3,13 @@
   See LandingGearMacro.APPEND_TO_CONTROLLER 
 */
 #if php
-import php.FileSystem;
-import php.Web;
+  import php.FileSystem;
+  import php.Web;
 #elseif neko
-import neko.FileSystem;
-import neko.Web;
+  import neko.FileSystem;
+  import neko.Web;
+#elseif nodejs
+  import js.Node;
 #end
 class AeroController
 {
@@ -19,6 +21,10 @@ class AeroController
   public var params: Hash<String>;
   public var obj_params: Hash<String>;
   public var route: Route;
+  
+  #if nodejs
+    public var res: Dynamic; // NodeHttpServerResp > NodeWriteStream;
+  #end
   
   public function new( action:String, params:Hash<String>, ?route:Route = null )
   {

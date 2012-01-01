@@ -1,11 +1,27 @@
 #if php
-import php.FileSystem;
-import php.io.File;
-import php.Lib;
+  import php.FileSystem;
+  import php.io.File;
+  import php.Lib;
 #elseif neko
-import neko.FileSystem;
-import neko.io.File;
-import neko.Lib;
+  import neko.FileSystem;
+  import neko.io.File;
+  import neko.Lib;
+#elseif nodejs
+  import js.Node;
+  class FileSystem
+  {
+    public static inline function exists( path:String ):Bool
+    {
+      return Node.path.existsSync(path);
+    }
+  }
+  class File
+  {
+    public static inline function getContent( path:String ):String
+    {
+      return Node.fs.readFileSync(path);
+    }
+  }
 #end
 import haml_crate.HamlHX;
 class AeroView
@@ -176,7 +192,13 @@ class AeroView
       }
       
       content.set("yield",HamlHX.haml2html(template, template_filename, content, helper)); // page helper
-      Lib.print( HamlHX.haml2html(layout, layout_filename, content, helper) );
+      #if nodejs
+        controller.res.write(
+      #else
+        Lib.print(
+      #end
+        HamlHX.haml2html(layout, layout_filename, content, helper)
+      );
       
       rendered = true;
     }

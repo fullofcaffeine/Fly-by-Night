@@ -1,10 +1,19 @@
 package hxuploader_crate;
 import haxe.io.Bytes;
-import php.Web;
-import php.NativeArray;
-import php.io.File;
-import php.io.FileOutput;
-import php.FileSystem;
+#if php
+  import php.Web;
+  import php.NativeArray;
+  import php.io.File;
+  import php.io.FileOutput;
+  import php.FileSystem;
+#elseif neko
+  import neko.Web;
+  import neko.NativeArray;
+  import neko.io.File;
+  import neko.io.FileOutput;
+  import neko.FileSystem;
+#end
+
 class HXUploader
 {
 

@@ -1,18 +1,31 @@
 /* Boot class */
-import php.Sys;
-import php.Session;
-import yaml_crate.YamlHX;
-import php.io.File;
-import macros.LandingGearMacro;
-import macros.RoutesMacro;
-import macros.ImportClassesMacro;
-import db.DBConnection;
+#if php
+  import php.Sys;
+  import php.Session;
+  import php.io.File;
+  import php.Web;
+#elseif neko
+  import neko.Web;
+#elseif nodejs
+  import js.Node;
+#end
+
+  import yaml_crate.YamlHX;
+  import macros.LandingGearMacro;
+  import macros.RoutesMacro;
+  import macros.ImportClassesMacro;
+  import db.DBConnection;
+
 class Takeoff
 {
   public static var headers: List<{ value : String, header : String}>;
   public static var path: String;
   public static var params: Hash<String>;
   public static var controller: AeroController;
+  
+/*  #if nodejs
+    public static var url_parts: NodeUrlObj;
+  #end*/
   
 	static function main() {
 	  // read configs
@@ -36,25 +49,103 @@ class Takeoff
 /*    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT")+"/../");*/
     
     // read application config
-    FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
+    #if nodejs
+      Node.fs.readFile(Settings.get("FBN_ROOT")+"config/application.yml", function(err, data){
+        if(err != null) throw err;
+        FlyByNightMixins._APP_CONFIG = YamlHX.read(data);
+        enable_sessions();
+      });
+    #else
+      FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
+      enable_sessions();
+    #end
     
-    if(FlyByNightMixins._APP_CONFIG != null){
-      Settings.set("FBN_SESSION_ENABLE", FlyByNightMixins.APP_CONFIG(null, "session.enable"));
-      if(Settings.get("FBN_SESSION_ENABLE") == "true"){
-        Settings.set("FBN_SESSION_NAME", FlyByNightMixins.APP_CONFIG(null,"session.name"));
-        Session.setName(Settings.get("FBN_SESSION_NAME"));
-        Session.start();
-      }
-    }
     
-		// route request to AeroController, AeroRestController handles the REST
+    LandingGearMacro.stage();
+
+		// write paths from routes.yml
+		RoutesMacro.write();
+		Routes;
+
+		// compile classes
+    ImportClassesMacro.write();
+    macros.ImportClasses;
+    
+    
 		
+#if nodejs
+    var pool = new js.node.mongo.MongoPool("127.0.0.1", 27017, "mongohaxetest", 3);
+    var server = Node.net.createServer(function(c) {
+      c.addListener(NodeC.EVENT_STREAM_CONNECT,function(d) {
+        trace("got connection");
+        c.write("hello\r\n");
+      });
+      
+      
+      headers = null; //req.headers;
+  		path = null; //req.url;
+  		params = new Hash<String>();
+  		var url_parts:NodeUrlObj;
+  		
+  		// CHANGE method for params _method 
+  		var _method = null; //req.method;
+  		
+  		var method:HTTPVerb;
+  		switch(_method){
+  			case "GET" : 
+  			  method = HTTPVerb.GET;
+  			  url_parts = Node.url.parse(req.url,true); // params
+          //console.log(params);
+          
+  			case "POST" :
+  			  if(params.exists("_method")){
+  			    if(params.get("_method") == "DELETE"){
+  			      method = HTTPVerb.DELETE;
+  		      }else if(params.get("_method") == "PUT"){
+  		        method = HTTPVerb.PUT;
+  		      }
+  			  }else{
+  			    method = HTTPVerb.POST;
+  			  }
+          var body='';
+			    c.addListener(NodeC.EVENT_STREAM_DATA,function(data) {
+            body +=data;
+          });
+          c.addListener(NodeC.EVENT_STREAM_END,function(data){
+            params =  Node.queryString.parse(body);
+            //console.log(params);
+          });
+  		}
+  		
+  		
+
+        
+
+        // route request to AeroController, AeroRestController handles the REST
+        controller = Route.resolve(path, method, params);
+        #if nodejs
+          controller.res = c;
+        #end
+        if(controller.view != null) controller.view.render();
+        
+          // c.write(d);
+          //connectMongo(pool);
+
+        trace("connection closed");
+        c.end("BYE");
+
+    });
+
+    server.listen(5000,"localhost");
+    
+#else
 		
-		// Build/ Instantiate a Request object
+
+		// Build a Request object
 		
-		headers = php.Web.getClientHeaders();
-		path = php.Web.getURI();
-		params = php.Web.getParams();
+		headers = Web.getClientHeaders();
+		path = Web.getURI();
+		params = Web.getParams();
     
 		// CHANGE method for params _method 
 		var _method = php.Web.getMethod();
@@ -73,24 +164,20 @@ class Takeoff
 			  }
 			  
 		}
+		
+		// route request to AeroController, AeroRestController handles the REST
+		controller = Route.resolve(path, method, params);
+    if(controller.view != null) controller.view.render();
     
-		// convert  List<{ value : String, header : String}> to Hash<String>
+    // close any db connections
+	  DBConnection.close();
+	  
+#end
+
 		
-	  LandingGearMacro.stage();
-		
-		// write paths from routes.yml
-		RoutesMacro.write();
-		Routes;
-		
-		// compile classes
-    ImportClassesMacro.write();
-    macros.ImportClasses;
-  
-  
 /*    throw(path);*/
     
-    controller = Route.resolve(path, method, params);
-    if(controller.view != null) controller.view.render();
+    
     
     
     /*
@@ -111,12 +198,27 @@ class Takeoff
                 */
     
   
-	  // close any db connections
-	  DBConnection.close();
+	  
 	  
 	  // close sessions
-	  if(Settings.get("FBN_SESSION_ENABLE") == "true"){
-      Session.close();
-    }
+	  #if !nodejs
+  	  if(Settings.get("FBN_SESSION_ENABLE") == "true"){
+        Session.close();
+      }
+    #end
+	}
+	
+	private static inline function enable_sessions(  ):Void
+	{
+	  #if !nodejs
+  	  if(FlyByNightMixins._APP_CONFIG != null){
+        Settings.set("FBN_SESSION_ENABLE", FlyByNightMixins.APP_CONFIG(null, "session.enable"));
+        if(Settings.get("FBN_SESSION_ENABLE") == "true"){
+          Settings.set("FBN_SESSION_NAME", FlyByNightMixins.APP_CONFIG(null,"session.name"));
+          Session.setName(Settings.get("FBN_SESSION_NAME"));
+          Session.start();
+        }
+      }
+    #end
 	}
 }
