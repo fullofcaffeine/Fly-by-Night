@@ -6,6 +6,8 @@
   TODO: add exists() get()
   TODO: add dynamic getters (through macros?) for strings, then use Utils.strip_slashes
   
+  - nodejs uses nodejs.db.Document
+  - php and - neko use SPOD Object
 */
 #if php
   import php.FileSystem;
@@ -27,10 +29,14 @@ import db.DBConnection;
   class AeroModel extends Object
 #end
 {
-/*  public var name: String;*/
-  public var id: Int;
-  public var manager: Dynamic;
-
+  
+  // Document uses ObjectID
+  #if ( php || neko )
+    public var id: Int;
+    public var manager: Dynamic;
+  #end
+  
+    
   public function new( )
   {
     DBConnection.connection;
