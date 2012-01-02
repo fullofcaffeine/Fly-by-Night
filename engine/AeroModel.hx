@@ -16,21 +16,28 @@
   import neko.db.Object;
   import neko.db.Manager;
 #elseif nodejs
-  class Object{}
+  import nodejs.db.Document;
 #end
 
 import db.DBConnection;
 
-class AeroModel extends Object
+#if nodejs
+  class AeroModel extends Document
+#else
+  class AeroModel extends Object
+#end
 {
 /*  public var name: String;*/
   public var id: Int;
   public var manager: Dynamic;
+
   public function new( )
   {
     DBConnection.connection;
 /*    name = Type.getClassName(Type.getClass(this)).substr(8); // models.*/
-    manager = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
+    #if ( php || neko )
+      manager = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
+    #end
     
     super();
       
@@ -89,9 +96,11 @@ class AeroModel extends Object
       _order = "ORDER BY "+order;
     }
     if(Type.getSuperClass(model) == AeroModel){
-      var manager = new Manager(cast Type.resolveClass(class_name));
-/*      result = manager.all(false);*/
-      result = manager.objects("SELECT * FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions+" "+_order+" "+_limit+" "+_offset, false);
+      #if ( php || neko )
+        var manager = new Manager(cast Type.resolveClass(class_name));
+  /*      result = manager.all(false);*/
+        result = manager.objects("SELECT * FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions+" "+_order+" "+_limit+" "+_offset, false);
+      #end
     }
     return result;
   }
@@ -100,12 +109,17 @@ class AeroModel extends Object
     DBConnection.connection;
     
     var class_name = Type.getClassName(model);
-    var result:Object = null;
+    #if ( php || neko )
+      var result:Object = null;
+    #else
+      var result:Document = null;
+    #end
     if(Type.getSuperClass(model) == AeroModel){
-      
-      var manager = new Manager(cast Type.resolveClass(class_name));
-      result = manager.get(id);
-/*      result = manager.objects("SELECT * FROM posts", false);*/
+      #if ( php || neko )
+        var manager = new Manager(cast Type.resolveClass(class_name));
+        result = manager.get(id);
+  /*      result = manager.objects("SELECT * FROM posts", false);*/
+      #end
     }
     return result;
   }
@@ -118,10 +132,12 @@ class AeroModel extends Object
     var result:Dynamic;
     var count = 0;
     if(Type.getSuperClass(model) == AeroModel){
-      var manager = new Manager(cast Type.resolveClass(class_name));
-/*      result = manager.all(false);*/
-      result = manager.result("SELECT COUNT(*) as `count` FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions);
-      count = result.count;
+      #if ( php || neko )
+        var manager = new Manager(cast Type.resolveClass(class_name));
+  /*      result = manager.all(false);*/
+        result = manager.result("SELECT COUNT(*) as `count` FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" "+conditions);
+        count = result.count;
+      #end
     }
     return count;
   }

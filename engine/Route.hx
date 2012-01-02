@@ -1,9 +1,11 @@
 import yaml_crate.YamlHX;
 import haxe.xml.Fast;
 #if php
-import php.io.File;
+  import php.io.File;
 #elseif neko
-import neko.io.File;
+  import neko.io.File;
+#elseif nodejs
+  import nodejs.File;
 #end
 class Route
 {
@@ -188,20 +190,23 @@ class Route
 	  return new RestfulRoute( route_name, request_uri, method, params);
 	}
 	  
-	public static function dispatch(route:Route):AeroController
+	public static function dispatch(route:Route):Dynamic //AeroController
 	{
-    var controller:AeroController = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params,route]);
+    var controller = Type.createInstance(Type.resolveClass("controllers."+Utils.toCamelCase(route.controller)),[route.action,route.params,route]);
     if(AeroController.runBeforeFilters(controller)){
-      
-      if(Reflect.hasField(controller, controller.action)){
+      #if !nodejs
+        if(Reflect.hasField(controller, controller.action)){
+      #end
         Reflect.callMethod(
           controller,
           Reflect.field(controller,controller.action),
           []);
 /*          [route.params]);*/
-      }else{
-        throw "ERROR! Controller: "+controller+"Does not have Action: "+controller.action;
-      }
+      #if !nodejs
+        }else{
+         throw "ERROR! Controller: "+controller.name+" Does not have Action: "+controller.action;
+        }
+      #end
     }else{ // fail pail during before filters
       
       throw "oops, before filters has fail. "+Reflect.field(Type.getClass(controller), "before_all");

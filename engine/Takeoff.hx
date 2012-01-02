@@ -21,7 +21,7 @@ class Takeoff
   public static var headers: List<{ value : String, header : String}>;
   public static var path: String;
   public static var params: Hash<String>;
-  public static var controller: AeroController;
+  public static var controller: Dynamic; // AeroController;
   
 /*  #if nodejs
     public static var url_parts: NodeUrlObj;
@@ -45,13 +45,19 @@ class Takeoff
 #end
     
     // set FBN_ROOT
-    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
-/*    Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT")+"/../");*/
+    #if php
+      Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("deploy")));
+    #elseif nodejs
+    
+      Settings.set("DOCUMENT_ROOT", untyped(__dirname)+"/" );
+      Settings.set("FBN_ROOT", Settings.get("DOCUMENT_ROOT").substr(0,Settings.get("DOCUMENT_ROOT").lastIndexOf("server")));
+    
+    #end
     
     // read application config
     #if nodejs
       Node.fs.readFile(Settings.get("FBN_ROOT")+"config/application.yml", function(err, data){
-        if(err != null) throw err;
+/*        if(err != null){ throw err; }*/
         FlyByNightMixins._APP_CONFIG = YamlHX.read(data);
         enable_sessions();
       });
@@ -75,64 +81,71 @@ class Takeoff
 		
 #if nodejs
     var pool = new js.node.mongo.MongoPool("127.0.0.1", 27017, "mongohaxetest", 3);
-    var server = Node.net.createServer(function(c) {
-      c.addListener(NodeC.EVENT_STREAM_CONNECT,function(d) {
+    var server = Node.net.createServer(function(nodeSocket) {
+      nodeSocket.addListener(NodeC.EVENT_STREAM_CONNECT,function(data) {
         trace("got connection");
-        c.write("hello\r\n");
+        trace( data );
+        //nodeSocket.write("hello\r\n");
       });
       
-      
-      headers = null; //req.headers;
-  		path = null; //req.url;
-  		params = new Hash<String>();
-  		var url_parts:NodeUrlObj;
-  		
-  		// CHANGE method for params _method 
-  		var _method = null; //req.method;
-  		
-  		var method:HTTPVerb;
-  		switch(_method){
-  			case "GET" : 
-  			  method = HTTPVerb.GET;
-  			  url_parts = Node.url.parse(req.url,true); // params
-          //console.log(params);
-          
-  			case "POST" :
-  			  if(params.exists("_method")){
-  			    if(params.get("_method") == "DELETE"){
-  			      method = HTTPVerb.DELETE;
-  		      }else if(params.get("_method") == "PUT"){
-  		        method = HTTPVerb.PUT;
-  		      }
-  			  }else{
-  			    method = HTTPVerb.POST;
-  			  }
-          var body='';
-			    c.addListener(NodeC.EVENT_STREAM_DATA,function(data) {
-            body +=data;
-          });
-          c.addListener(NodeC.EVENT_STREAM_END,function(data){
-            params =  Node.queryString.parse(body);
-            //console.log(params);
-          });
-  		}
-  		
-  		
-
+      nodeSocket.addListener(NodeC.EVENT_STREAM_DATA,function(data) {
         
+        headers = null; //req.headers;
+    		path = ""; //req.url;
+    		params = new Hash<String>();
+    		var url_parts:NodeUrlObj;
+
+    		// CHANGE method for params _method 
+    		var _method = null; //req.method;
+
+    		var method:HTTPVerb = null;
+    		switch(_method){
+    			case "GET" : 
+    			  method = HTTPVerb.GET;
+    			  url_parts = Node.url.parse(path/*req.url*/,true); // params
+            //console.log(params);
+
+    			case "POST" :
+    			  if(params.exists("_method")){
+    			    if(params.get("_method") == "DELETE"){
+    			      method = HTTPVerb.DELETE;
+    		      }else if(params.get("_method") == "PUT"){
+    		        method = HTTPVerb.PUT;
+    		      }
+    			  }else{
+    			    method = HTTPVerb.POST;
+    			  }
+            var body='';
+  			    nodeSocket.addListener(NodeC.EVENT_STREAM_DATA,function(data) {
+              body +=data;
+            });
+            nodeSocket.addListener(NodeC.EVENT_STREAM_END,function(data){
+              params =  Node.queryString.parse(body);
+              //console.log(params);
+            });
+    		}
+
+
+
+
 
         // route request to AeroController, AeroRestController handles the REST
         controller = Route.resolve(path, method, params);
-        #if nodejs
-          controller.res = c;
-        #end
-        if(controller.view != null) controller.view.render();
+        controller.res = nodeSocket;
         
+        if(controller.view != null) controller.view.render();
+
           // c.write(d);
           //connectMongo(pool);
 
-        trace("connection closed");
-        c.end("BYE");
+        
+        
+        
+        /*nodeSocket.write("DATA");
+                nodeSocket.write(data);
+                nodeSocket.end("done writing");*/
+        nodeSocket.end();
+      });
 
     });
 

@@ -3,6 +3,8 @@ package controllers;using AeroModel; using AeroPath; using FlyByNightMixins;/*La
   import php.Session;
 #elseif neko
   import neko.Session;
+#elseif nodejs
+  import nodejs.Session;
 #end
 class Application extends AeroController
 {

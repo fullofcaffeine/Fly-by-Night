@@ -10,6 +10,8 @@
   import neko.Web;
 #elseif nodejs
   import js.Node;
+  import nodejs.FileSystem;
+  import nodejs.File;
 #end
 class AeroController
 {
@@ -34,8 +36,11 @@ class AeroController
     content = new Hash<Dynamic>();
     this.params = params;
     var default_obj_name = Utils.singularize(Utils.to_underscore(name).toLowerCase());
-    obj_params = getObjParams(default_obj_name);
-    
+    #if nodejs
+      obj_params = null; // TODO, won't have to do the Web.parseParams into Array trickery for nodejs though
+    #elseif (php||neko)
+      obj_params = getObjParams(default_obj_name);
+    #end
     if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/helpers/"+name+".hx")){
       helper = Type.createInstance(Type.resolveClass("helpers."+name),[this]);
     }else if(FileSystem.exists(Settings.get("FBN_ROOT")+"app/helpers/Application.hx")){
@@ -48,6 +53,7 @@ class AeroController
       view = new AeroView(this);
   }
   
+#if ( php || neko )
   private inline function getParam( obj:String, key:String ):String
   {
     var val = "";
@@ -80,9 +86,15 @@ class AeroController
 	  return h;
 	}
 
+#end
+
   private inline function redirect_to(url:String):Void
   {
-    Web.redirect(url);
+    #if (php || neko)
+      Web.redirect(url);
+    #else
+      throw("AeroController.redirect_to is not implemented for this target yet.");
+    #end
   }
   private inline function render(named_route:Routes):Void
   {
@@ -116,7 +128,13 @@ class AeroController
             if(filter.only != null && !Lambda.has(filter.only, controller.action )){
               continue;
             }
-            if(Reflect.callMethod(controller, action, [])){
+            if(
+              #if nodejs
+                true // untyped(action.apply(controller,[]))
+              #else
+                Reflect.callMethod(controller, action, [])
+              #end
+              ){
               continue;
             }else{
               positive_return = false;
@@ -144,7 +162,13 @@ class AeroController
               if(filter.only != null && !Lambda.has(filter.only, controller.action )){
                 continue;
               }
-              if(Reflect.callMethod(controller, action, [])){
+              if(
+                #if nodejs
+                  true //untyped(action.apply(controller,[]))
+                #else
+                  Reflect.callMethod(controller, action, [])
+                #end  
+                ){
                 continue;
               }else{
                 positive_return = false;

@@ -128,7 +128,6 @@ is the directory ./plot/ writable?");
     if(!db_config.hasNode.database){
       throw("ERROR! 'database' name is not set for mongodb connection.
 Fix it! at ./config/database.yml");
-      return null;
     }
     var database = db_config.node.database.innerData;
 

@@ -1,6 +1,5 @@
 package controllers;using AeroModel; using AeroPath; using FlyByNightMixins;/*LandingGear*/
 import models.Post;
-import hxuploader_crate.HXUploader;
 
 class Posts extends controllers.Application
 {

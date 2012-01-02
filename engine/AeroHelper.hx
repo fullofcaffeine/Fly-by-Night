@@ -3,11 +3,14 @@
   See LandingGearMacro.APPEND_TO_HELPER 
 */
 #if php
-import php.FileSystem;
-import php.io.File;
+  import php.FileSystem;
+  import php.io.File;
 #elseif neko
-import neko.FileSystem;
-import neko.io.File;
+  import neko.FileSystem;
+  import neko.io.File;
+#elseif nodejs
+  import nodejs.FileSystem;
+  import nodejs.File;
 #end
 import haml_crate.HamlHX;
 class AeroHelper

@@ -1,6 +1,10 @@
 package controllers;using AeroModel; using AeroPath; using FlyByNightMixins;/*LandingGear*/
 #if php
   import php.Session;
+#elseif neko
+  import neko.Session;
+#elseif nodejs
+  import nodejs.Session;
 #end
 class Sessions extends controllers.Application
 {

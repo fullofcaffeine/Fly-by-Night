@@ -8,20 +8,8 @@
   import neko.Lib;
 #elseif nodejs
   import js.Node;
-  class FileSystem
-  {
-    public static inline function exists( path:String ):Bool
-    {
-      return Node.path.existsSync(path);
-    }
-  }
-  class File
-  {
-    public static inline function getContent( path:String ):String
-    {
-      return Node.fs.readFileSync(path);
-    }
-  }
+  import nodejs.FileSystem;
+  import nodejs.File;
 #end
 import haml_crate.HamlHX;
 class AeroView

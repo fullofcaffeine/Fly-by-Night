@@ -1,5 +1,6 @@
 FlyByNight.tmproj
 deploy/*
+server/haxenode.js
 autopilot/engage.n
 autopilot/devise.n
 plot/ImportSchemes.hx

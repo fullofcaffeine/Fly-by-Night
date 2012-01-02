@@ -30,27 +30,28 @@
 # -debug
 
 
---next # automated tests via Runway
-
--cp engine
--cp app
--cp cargo
--cp runway
-
--neko runway/tests.n
--main runway.Runner
-
---no-inline
-
--D engine
--D cargo
--D app
--D runway
-
-# enable log colors in terminal
--D color
-
-# see engine/ViewsRunway.hx
-# -D views
-
--cmd neko runway/tests.n >> blackbox/runway.log && rm runway/tests.n
+#--next
+## automated tests via Runway
+#
+#-cp engine
+#-cp app
+#-cp cargo
+#-cp runway
+#
+#-neko runway/tests.n
+#-main runway.Runner
+#
+#--no-inline
+#
+#-D engine
+#-D cargo
+#-D app
+#-D runway
+#
+## enable log colors in terminal
+#-D color
+#
+## see engine/ViewsRunway.hx
+## -D views
+#
+#-cmd neko runway/tests.n >> blackbox/runway.log && rm runway/tests.n
