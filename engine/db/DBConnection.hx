@@ -56,15 +56,20 @@ class DBConnection
       }
 
       var adapter = Reflect.field(DBAdapters,db_config.node.adapter.innerData);
-            
-      if(adapter == DBAdapters.sqlite3){
-        _connection = sqlite_connection(db_config);
-      }else{ // MYSQL
-        _connection = mysql_connection(db_config);
-      }
       
-      Manager.cnx = _connection;
-      Manager.initialize();
+      #if ( php || neko )
+        if(adapter == DBAdapters.sqlite3){
+          _connection = sqlite_connection(db_config);
+        }else if(adapter == DBAdapters.mysql){ // MYSQL
+          _connection = mysql_connection(db_config);
+        }
+        Manager.cnx = _connection;
+        Manager.initialize();
+      #elseif mongodb
+        if(adapter == DBAdapters.mongodb){
+          _connection = mongodb_connection(db_config);
+        }
+      #end
         
     }
     return _connection; }
@@ -101,7 +106,7 @@ is the directory ./plot/ writable?");
   private static inline function mysql_connection( db_config:Fast ):Connection
   {
     var con:Connection = null;
-    var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "";
+    var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "localhost";
     var _port = (db_config.hasNode.port)? Std.parseInt(db_config.node.port.innerData) : 3306;
     var _database = (db_config.hasNode.database)? db_config.node.database.innerData : "";
     var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
@@ -120,11 +125,25 @@ is the directory ./plot/ writable?");
   
 #elseif nodejs
   
-  private static function get_connection():Connection{ return _connection; }
+  private static function get_connection():Connection{ 
+    #if mongodb
+      _connection = mongodb_connection()
+    #end
+    
+    return _connection; }
   
-  private static inline function mongodb_connection( db_config:Fast ):Void
+  private static inline function mongodb_connection( db_config:Fast ):Connection
   {
     var con:Connection = null;
+    var _host = (db_config.hasNode.host)? db_config.node.host.innerData : "localhost";
+    var _port = (db_config.hasNode.port)? Std.parseInt(db_config.node.port.innerData) : 27017;
+    var _database = (db_config.hasNode.database)? db_config.node.database.innerData : "fbn_default";
+    var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
+    var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
+    var _size = (db_config.hasNode.pool_size)? Std.parseInt(db_config.node.pool_size.innerData) : 3;
+    
+    var db_config = APP_CONFIG new MongoPool(_host, _port, _database, _size);
+    
     if(!db_config.hasNode.database){
       throw("ERROR! 'database' name is not set for mongodb connection.
 Fix it! at ./config/database.yml");

@@ -2,7 +2,7 @@ package db;
 enum DBAdapters
 {
 
-#if php || neko
+#if (php || neko)
 
   sqlite3;
   mysql;

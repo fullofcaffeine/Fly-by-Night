@@ -1,11 +1,11 @@
 development:
-  adapter: mysql
+  adapter: mongodb
   host: localhost
-  port: 3306
   database: fbn_development
-  user: fbn_development
-  pass: fbn_development
-  socket: null
+  user: root
+  pass: password
+  port : 27017
+  pool_size: 3
 
 runway:
   adapter: mysql
@@ -27,8 +27,17 @@ sqlite3_sample:
 mysql_sample:
   adapter: mysql
   host: localhost
-  database: MyDatabase
+  database: fbn_development
   user: root
   pass: secret
   port : 3306
   socket : null
+  
+mongodb_sample:
+  adapter: mongodb
+  host: localhost
+  database: fbn_development
+  user: root
+  pass: password
+  port: 27017
+  pool_size: 3
