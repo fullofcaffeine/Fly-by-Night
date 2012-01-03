@@ -19,11 +19,17 @@
   import neko.db.Manager;
 #elseif nodejs
   import nodejs.db.Document;
+  import js.Node;
+#end
+#if mongodb
+  import js.node.mongo.Mongo;
+  import js.node.mongo.MongoPool;
+  import js.node.mongo.MongoTools;
 #end
 
 import db.DBConnection;
 
-#if nodejs
+#if mongodb
   class AeroModel extends Document
 #else
   class AeroModel extends Object
@@ -34,6 +40,8 @@ import db.DBConnection;
   #if ( php || neko )
     public var id: Int;
     public var manager: Dynamic;
+  #elseif mongodb
+    public var id:String; // last 4 of _id, reroll if exists
   #end
   
     
@@ -110,14 +118,22 @@ import db.DBConnection;
     }
     return result;
   }
-  public static inline function find( model:Dynamic, id:Int ):Dynamic
+  public static inline function find( 
+    model:Dynamic, 
+    #if (php || neko)
+      id:Int
+    #elseif nodejs
+      id:String
+    #end
+    ):Dynamic
   {
     DBConnection.connection;
     
     var class_name = Type.getClassName(model);
+    
     #if ( php || neko )
       var result:Object = null;
-    #else
+    #elseif mongodb
       var result:Document = null;
     #end
     if(Type.getSuperClass(model) == AeroModel){
@@ -125,6 +141,57 @@ import db.DBConnection;
         var manager = new Manager(cast Type.resolveClass(class_name));
         result = manager.get(id);
   /*      result = manager.objects("SELECT * FROM posts", false);*/
+      #elseif mongodb
+        trace("HERE MONGOPOOL");
+        var pool = new MongoPool("127.0.0.1", 27017, "fbn_test", 3);
+        
+        pool.connection(function (db :Database) {
+    			trace('db=' + db);
+
+    			MongoTools.create(pool, model, function (err :MongoErr, obj :Dynamic) {
+    				if (err != null) trace(Std.string(err));
+    				// Assert.isNotNull(obj);
+    				trace('obj=' + Std.string(obj));
+
+    				MongoTools.load(pool, model, obj._id, function (err :MongoErr, loaded :Dynamic) {
+    					if (err != null) trace(Std.string(err));
+    					trace('loaded=' + Std.string(loaded));
+    					// Assert.isNotNull(loaded, "loaded is null");
+
+    					MongoTools.find(pool, model, "id", id, function (err :MongoErr, loaded :Dynamic) {
+    						if (err != null) trace(Std.string(err));
+    						trace('found with a==1:' + Std.string(loaded));
+
+    						//Assert.isNotNull(loaded, "find loaded is null");	
+
+
+    						/*MongoTools.update(pool, loaded, function (err :MongoErr, done :Bool) {
+    						                  if (err != null) trace(Std.string(err));
+    						                  trace('updated, now load again');
+
+    						                  MongoTools.load(pool, DBStore, loaded._id, function (err :MongoErr, updated :DBStore) {
+    						                    if (err != null) trace(Std.string(err));
+    						                    trace('updated loaded=' + Std.string(updated));
+
+    						                    MongoTools.keys(pool, DBStore, function (err :MongoErr, keys :Array<Dynamic>) {
+    						                      if (err != null) trace(Std.string(err));
+    						                      trace('keys=' + keys);
+    						                    });
+    						                  });*/
+                });                
+    					});
+    				});
+    			});
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
       #end
     }
     return result;
