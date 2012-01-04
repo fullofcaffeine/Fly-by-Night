@@ -15,7 +15,12 @@ package db;
   import neko.db.Mysql;
   import neko.db.Manager;
 #elseif nodejs                 
-  typedef Connection = Dynamic;
+  import nodejs.FileSystem;
+  import nodejs.File;
+#end
+#if mongodb
+  import js.node.mongo.MongoPool;
+  typedef Connection = MongoPool;
 #end
   
   import db.DBAdapters;
@@ -74,12 +79,13 @@ class DBConnection
   
   public static function close(  ):Void
   {
-    if(_connection != null){
-      Manager.cleanup();
-      _connection.close();
-      Manager.cnx = _connection = null;
-    }
-    
+    #if ( php || neko )
+      if(_connection != null){
+        Manager.cleanup();
+        _connection.close();
+        Manager.cnx = _connection = null;
+      }
+    #end
   }
 
   private static inline function sqlite_connection( db_config:Fast ):Connection
@@ -145,12 +151,13 @@ Fix it! at ./config/database.yml");
     var database = db_config.node.database.innerData;
 
     // MongoTools.create .load 
-    con = null; // TODO
+    // con = null; // TODO
 
     if(con == null){
       throw("ERROR cannot connect to mongodb database: "+database+"");
     }
     
+    return con;
   }
   
   private static function set_connection( val:Connection ):Connection{ _connection = val; return _connection; }

@@ -23,7 +23,7 @@
 # atmospheres  development | production
 -D nodejs
 -D mongodb
--D production
+-D development
 --no-inline
 
 # debugs  profile, stacktrace
