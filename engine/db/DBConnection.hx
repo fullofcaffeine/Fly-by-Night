@@ -28,8 +28,6 @@ class DBConnection
   private static var _connection:Connection;
   public static var connection(get_connection,set_connection):Connection;
 
-#if (php || neko)
-
   private static function get_connection():Connection{ 
     if (_connection == null){
       var env = Settings.get("FBN_ENV");
@@ -93,9 +91,11 @@ Fix it! at ./config/database.yml");
       return null;
     }
     var database = db_config.node.database.innerData;
-
-    con = Sqlite.open(Settings.get('FBN_ROOT')+"./plot/"+database);
-  
+    
+    #if (php || neko)
+      con = Sqlite.open(Settings.get('FBN_ROOT')+"./plot/"+database);
+    #end
+    
     if(!FileSystem.exists(Settings.get('FBN_ROOT')+"./plot/"+database)){
       throw("ERROR creating sqlite3 database at ./plot/"+database+"
 is the directory ./plot/ writable?");
@@ -112,25 +112,18 @@ is the directory ./plot/ writable?");
     var _user = (db_config.hasNode.user)? db_config.node.user.innerData : "";
     var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
     var _socket = (db_config.hasNode.socket && db_config.node.socket.innerData != "null")? db_config.node.socket.innerData : null;
-    con = Mysql.connect({ 
-        host : _host,
-        port : _port,
-        database : _database,
-        user : _user,
-        pass : _pass,
-        socket : _socket
-    });
+    #if (php || neko)
+      con = Mysql.connect({ 
+          host : _host,
+          port : _port,
+          database : _database,
+          user : _user,
+          pass : _pass,
+          socket : _socket
+      });
+    #end
     return con;
   }
-  
-#elseif nodejs
-  
-  private static function get_connection():Connection{ 
-    #if mongodb
-      _connection = mongodb_connection()
-    #end
-    
-    return _connection; }
   
   private static inline function mongodb_connection( db_config:Fast ):Connection
   {
@@ -142,8 +135,9 @@ is the directory ./plot/ writable?");
     var _pass = (db_config.hasNode.pass)? db_config.node.pass.innerData : "";
     var _size = (db_config.hasNode.pool_size)? Std.parseInt(db_config.node.pool_size.innerData) : 3;
     
-    var db_config = APP_CONFIG new MongoPool(_host, _port, _database, _size);
-    
+    #if mongodb
+      con = new MongoPool(_host, _port, _database, _size);
+    #end
     if(!db_config.hasNode.database){
       throw("ERROR! 'database' name is not set for mongodb connection.
 Fix it! at ./config/database.yml");
@@ -158,8 +152,6 @@ Fix it! at ./config/database.yml");
     }
     
   }
-  
-#end
   
   private static function set_connection( val:Connection ):Connection{ _connection = val; return _connection; }
 
