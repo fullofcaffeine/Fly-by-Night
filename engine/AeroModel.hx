@@ -142,9 +142,7 @@ import db.DBConnection;
         result = manager.get(id);
   /*      result = manager.objects("SELECT * FROM posts", false);*/
       #elseif mongodb
-        trace("HERE MONGOPOOL");
-        var pool = new MongoPool("127.0.0.1", 27017, "fbn_test", 3);
-        
+        var pool = DBConnection.connection;
         pool.connection(function (db :Database) {
     			trace('db=' + db);
 
@@ -165,15 +163,15 @@ import db.DBConnection;
     						//Assert.isNotNull(loaded, "find loaded is null");	
 
 
-    						/*MongoTools.update(pool, loaded, function (err :MongoErr, done :Bool) {
+    						/*MongoTools.update(DBConnection.pool, loaded, function (err :MongoErr, done :Bool) {
     						                  if (err != null) trace(Std.string(err));
     						                  trace('updated, now load again');
 
-    						                  MongoTools.load(pool, DBStore, loaded._id, function (err :MongoErr, updated :DBStore) {
+    						                  MongoTools.load(DBConnection.pool, DBStore, loaded._id, function (err :MongoErr, updated :DBStore) {
     						                    if (err != null) trace(Std.string(err));
     						                    trace('updated loaded=' + Std.string(updated));
 
-    						                    MongoTools.keys(pool, DBStore, function (err :MongoErr, keys :Array<Dynamic>) {
+    						                    MongoTools.keys(DBConnection.pool, DBStore, function (err :MongoErr, keys :Array<Dynamic>) {
     						                      if (err != null) trace(Std.string(err));
     						                      trace('keys=' + keys);
     						                    });

@@ -83,7 +83,6 @@ class Takeoff
   
     var dbpool = DBConnection.connection;
   
-    var pool = new js.node.mongo.MongoPool("127.0.0.1", 27017, "mongohaxetest", 3);
     var server = Node.net.createServer(function(nodeSocket) {
       nodeSocket.addListener(NodeC.EVENT_STREAM_CONNECT,function(data) {
         trace("got connection");
