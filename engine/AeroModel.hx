@@ -215,7 +215,7 @@ import db.DBConnection;
   
   public override function toString(  ):String
   {
-    var out = Type.getClass(this) + " => {\n";
+    var out = "[AeroModel " + Type.getClassName(Type.getClass(this)) + "] => {\n";
     var hash = this.toHash();
     for(key in hash.keys()){
       out += "\t"+key+" => "+hash.get(key)+"\n";

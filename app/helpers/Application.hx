@@ -5,7 +5,7 @@ class Application extends AeroHelper
   public function new( controller:AeroController )
   {
     super(controller);
-    load_helpers = [new aero_helpers.Forms(controller)];
+    load_helpers = [new aero_helpers.Forms(controller), new aero_helpers.Partials(controller)];
   }
 }
 
