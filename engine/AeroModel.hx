@@ -40,6 +40,8 @@ import db.DBConnection;
   #if ( php || neko )
     public var id: Int;
     public var manager: Dynamic;
+    public var _id(get__id,null):Int;
+    private inline function get__id():Int{ return id; }
   #elseif mongodb
     public var id:String; // last 4 of _id, reroll if exists
   #end
