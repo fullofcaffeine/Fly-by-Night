@@ -214,6 +214,15 @@ class AeroView
         helper = custom_helper;
       }
       
+      var layout_t_type = determine_template_type(layout_filename);
+      var template_t_type = determine_template_type(template_filename);
+      switch(layout_t_type){
+        
+      }
+      switch(template_t_type){
+        
+      }
+      
       content.set("yield",HamlHX.haml2html(template, template_filename, content, helper)); // page helper
       #if nodejs
         controller.res.write(
@@ -233,7 +242,8 @@ class AeroView
     var r:TemplateType;
     if(StringTools.endsWith(file_name, ".haml")){
       r = TemplateType.HAML;
-      
+    }else if(StringTools.endsWith(file_name, ".html")){
+      r = TemplateType.HTML;
 //    Not yet implemented
 //    }else if(StringTools.endsWith(file_name, ".mtt")){
 //      r = TemplateType.TEMPLO;

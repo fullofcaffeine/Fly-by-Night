@@ -2,6 +2,7 @@ class Template
 {
   /*
     haml : TemplateType.HAML,
+    html : TemplateType.HTML,
     mtt : TemplateType.TEMPLO,
     xml : TemplateType.XML
     
@@ -15,8 +16,10 @@ class Template
   private static inline function get_types():Hash<TemplateType>{
     var h = new Hash<TemplateType>();
     h.set('haml', TemplateType.HAML);
-    h.set('mtt', TemplateType.TEMPLO);
-    h.set('xml', TemplateType.XML);
+    h.set('html', TemplateType.HTML);
+    /*  NOT YET IMPLEMENTED
+        h.set('mtt', TemplateType.TEMPLO);
+        h.set('xml', TemplateType.XML);*/
     return h;
   }
 }

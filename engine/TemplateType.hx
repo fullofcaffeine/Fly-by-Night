@@ -1,6 +1,7 @@
 enum TemplateType
 {
   HAML;
-  TEMPLO;
-  XML;
+  HTML;
+  /*  TEMPLO;*/
+  /*  XML;*/
 }
