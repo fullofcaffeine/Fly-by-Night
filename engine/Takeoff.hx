@@ -22,8 +22,11 @@ class Takeoff
 		
 		/*    trace(php.Sys.environment());*/
 		
-		// env   
-#if production
+		// env
+#if test
+    Settings.set("FBN_ENV", "test");
+    Settings.set("ATMOSPHERE", "test"); // alias
+#elseif production
     Settings.set("FBN_ENV", "production");
     Settings.set("ATMOSPHERE", "production"); // alias
 #else // development

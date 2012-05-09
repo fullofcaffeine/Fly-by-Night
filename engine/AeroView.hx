@@ -10,6 +10,23 @@ class AeroView
   private var content: Hash<Dynamic>;
   private var helper: AeroHelper;
   
+  private var _template_type:TemplateType;
+  public var template_type(get_template_type,set_template_type):TemplateType;
+  private inline function get_template_type():TemplateType{ return _template_type; }
+  private inline function set_template_type( val:TemplateType ):TemplateType{ _template_type = val; return _template_type; }
+  
+  public var type_ext(get_type_ext,null):String;
+  private inline function get_type_ext():String{ 
+    var r = ".haml";
+/*    switch(_type_ext){
+      case Std.string(TemplateType.HAML):
+        r = ".haml";
+      default:
+        return ".haml";
+    }*/
+    return r;  
+  }
+  
   private var rendered: Bool;
   
   public function new( controller:AeroController )
@@ -19,8 +36,6 @@ class AeroView
   
   public function render_text( text:String, ?custom_layout:String ):Void
   {
-    var type_ext = ".haml"; // TODO cycle through default types for matching file
-    
     if(custom_layout != null){
       var layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext;
       if(FileSystem.exists(layout_filename)){
@@ -40,145 +55,46 @@ class AeroView
   
   public function render( ?custom_layout:String, ?custom_template:String, ?custom_content:Hash<Dynamic>, ?custom_helper:AeroHelper ):Void
   {
-    var type_ext = ".haml"; // TODO cycle through default types for matching file
-    var layout_filename = "";
-    var template_filename = "";
+    var layout_filename, template_filename = "";
     if(!rendered){
       if(custom_layout == null){
-        
-        
-        // check for default layout template by controller name
-        var default_layout_found = false;
-        for(ext in Template.types.keys()){
-          if(!default_layout_found){
-            layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+"."+ext;
-            if(FileSystem.exists(layout_filename)){
-              layout = File.getContent(layout_filename);
-              default_layout_found = true;
-              break;
-            }
-          }
-        }
-        
-        // fallback to application layout
-        if(!default_layout_found){
-          
-          var application_layout_found = false;
-          for(ext in Template.types.keys()){
-            if(!application_layout_found){
-              layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/application."+ext;
-              if(FileSystem.exists(layout_filename)){
-                layout = File.getContent(layout_filename);
-                application_layout_found = true;
-                break;
-              }
-            }
-          }
-          
-          if(!application_layout_found){
-            throw "Default Layout for "+controller.name+":"+controller.action+" is missing at: "+Settings.get("FBN_ROOT")+"app/views/layouts/application<br />Must be a supported template type: "+Template.types.toString();
-          }
-        }
-        
-      }else if(custom_layout == "false" || custom_layout == "none" || custom_layout == "null"){
-        layout_filename = "[none]";
-        layout = "= yield";
-      }else{
-        
-        // check for custom layout
-        if(custom_layout.indexOf(".")>0){ 
-          // defines template type by ext
-          layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout);
+        layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+type_ext;
+        if(FileSystem.exists(layout_filename)){
+          layout = File.getContent(layout_filename);
+        }else{
+          layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/application"+type_ext;
           if(FileSystem.exists(layout_filename)){
             layout = File.getContent(layout_filename);
           }else{
-            throw "Layout for "+controller.name+":"+controller.action+"  '"+custom_layout+"' doesn't exist at: "+layout_filename;
+            throw "Default Layout is missing at: "+layout_filename;
           }
-          
-        }else{
-          // loop through template types
-          var custom_layout_found = false;
-          for(ext in Template.types.keys()){
-            if(!custom_layout_found){
-              layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+"."+ext;
-              if(FileSystem.exists(layout_filename)){
-                layout = File.getContent(layout_filename);
-                custom_layout_found = true;
-                break;
-              }
-            }
-          }
-          if(!custom_layout_found){
-            throw "Layout "+controller.name+":"+controller.action+" '"+custom_layout+"' doesn't exist at: "+Settings.get("FBN_ROOT")+"app/views/layouts/<br />Must be a supported template type: "+Template.types.toString();
-          }
-          
         }
-        
+      }else if(custom_layout == "false"){
+        layout_filename = "[none]";
+        layout = "= yield";
+      }else{
+        layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(custom_layout)+type_ext;
+        if(FileSystem.exists(layout_filename)){
+          layout = File.getContent(layout_filename);
+        }else{
+          throw "Layout "+custom_layout+" doesn't exist at: "+layout_filename;
+        }
       }
       if(custom_template == null){
-        
-        // check for template by default controller and action name
-        var default_template_found = false;
-        for(ext in Template.types.keys()){
-          if(!default_template_found){
-            template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+Utils.to_underscore(controller.action)+"."+ext;
-            if(FileSystem.exists(template_filename)){
-              template = File.getContent(template_filename);
-              default_template_found = true;
-              break;
-            }
-          }
-        }
-        
-        if(!default_template_found){
-          throw "Default Action template for "+controller.name+":"+controller.action+" not found at "+Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+Utils.to_underscore(controller.action)+"<br />Must be a supported template type: "+Template.types.toString();
-        }
-        
-      }else{ // custom template defined
-        
-        var custom_template_found = false;
-        
-        if(custom_template.indexOf("/")>0){
-          // custom path
-          
-          for(ext in Template.types.keys()){
-            if(!custom_template_found){
-              template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+"."+ext;
-              if(FileSystem.exists(template_filename)){
-                template = File.getContent(template_filename);
-                custom_template_found = true;
-                break;
-              }
-            }
-          }
-          if(!custom_template_found){
-            throw "Template for "+controller.name+":"+controller.action+" not found at "+Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+"<br />Must be a supported template type: "+Template.types.toString();
-          }
-          
-          
+        template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+controller.action+type_ext;
+        if(FileSystem.exists(template_filename)){
+          template = File.getContent(template_filename);
         }else{
-          // use controller name for path
-          
-          for(ext in Template.types.keys()){
-            if(!custom_template_found){
-              template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+Utils.to_underscore(custom_template)+"."+ext;
-              if(FileSystem.exists(template_filename)){
-                template = File.getContent(template_filename);
-                custom_template_found = true;
-                break;
-              }
-            }
-          }
-          if(!custom_template_found){
-            throw "Template for "+controller.name+":"+controller.action+" not found at "+Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(controller.name)+"/"+Utils.to_underscore(custom_template)+"<br />Must be a supported template type: "+Template.types.toString();
-          }
-          
+          throw "Default Action template for "+controller.action+" not found at "+template_filename;
         }
-        
-      } // end custom template
-      
-      
-      
+      }else{
+       template_filename = Settings.get("FBN_ROOT")+"app/views/"+Utils.to_underscore(custom_template)+type_ext;
+        if(FileSystem.exists(template_filename)){
+          template = File.getContent(template_filename);
+        }else{
+          throw "Template "+custom_template+" doesn't exist at: "+template_filename;
+        }
+      }
       if(custom_content == null){
         content = controller.content;
       }else{
@@ -195,26 +111,6 @@ class AeroView
       
       rendered = true;
     }
-  }
-  
-  
-  private static inline function determine_template_type( file_name:String ):TemplateType
-  {
-    var r:TemplateType;
-    if(StringTools.endsWith(file_name, ".haml")){
-      r = TemplateType.HAML;
-      
-//    Not yet implemented
-//    }else if(StringTools.endsWith(file_name, ".mtt")){
-//      r = TemplateType.TEMPLO;
-//    }else if(StringTools.endsWith(file_name, ".xml")){
-//      r = TemplateType.XML;
-
-    }else{
-      throw "Template Error! '"+file_name+"' is not one of "+Type.getEnumConstructs(TemplateType).toString();
-    }
-    
-    return r;
   }
   
 }

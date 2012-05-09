@@ -33,10 +33,10 @@ class AeroModel extends php.db.Object
     if(find(Type.getClass(this),this.id) == null){ // new record
       
       // magic columns
-      if(Lambda.has(Type.getInstanceFields(Type.getClass(this)),"created_at")){
+      if(Reflect.hasField(Type.getClass(this), "created_at")){
         Reflect.setField(this, "created_at", Date.now());
       }
-      if(Lambda.has(Type.getInstanceFields(Type.getClass(this)),"updated_at")){
+      if(Reflect.hasField(Type.getClass(this), "updated_at")){
         Reflect.setField(this, "updated_at", Date.now());
       }
       

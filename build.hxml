@@ -7,7 +7,7 @@
 -main Takeoff
 
 # atmospheres  development | production
--D production
+-D development
 --no-inline
 
 # debugs  profile, stacktrace

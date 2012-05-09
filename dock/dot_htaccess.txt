@@ -1,9 +1,13 @@
-DirectoryIndex index.html index.php
+DirectoryIndex index.html
 Options -Indexes
 RewriteEngine on
 RewriteBase /
-
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
 RewriteRule ^.*$ index.php [NC,L]
+ErrorDocument 500 /500.html
+ErrorDocument 502 /500.html
+ErrorDocument 503 /500.html
+ErrorDocument 504 /500.html
+ErrorDocument 404 /404.html

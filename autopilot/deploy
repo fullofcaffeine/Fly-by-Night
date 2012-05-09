@@ -1,0 +1,59 @@
+#!/bin/sh
+
+if [ -s ${1} ]; then
+  echo "Type 'autopilot/deploy production' or 'autopilot/deploy staging'"
+  echo "Type 'autopilot/deploy staging images' to include images"
+  echo "Type 'autopilot/deploy staging config' to overwrite the config files"
+else
+  if [ $1 = "staging" ]; then
+    if [ $2 = "config" ]; then
+      echo "\n\n====================================\n\nAre you sure you want to overwrite all the files in 'config' on the $1 server  [yes/no] ?\n\n====================================\n\n"
+      read ANSWER
+      if [ $ANSWER = "yes" ]; then
+        echo "\n\n====================================\nReplacing 'config' to $1 server...\n====================================\n\n"
+          # scp -r config @server:~/path/to/parent/of/webroot/
+        echo "\n\n====================================\nOverwrote 'config'\n====================================\n\n"
+      fi
+    else
+      echo "\n\n====================================\nDeploying to $1 server...\n====================================\n\n"
+      # scp -r app/* user@server:~/path/to/parent/of/webroot/app
+      # scp -r deploy/lib/* user@server:~/path/to/parent/of/webroot/deploy/lib
+      echo "\n\n====================================\nDeployed 'app'\n====================================\n\n"
+      if [ $2 = "images" ]; then
+        # scp -r deploy/images/* user@server:~/path/to/parent/of/webroot/deploy/images
+        echo "\n\n====================================\nDeployed public 'images'\n====================================\n\n"
+      fi
+      # scp -r deploy/javascripts/* user@server:~/path/to/parent/of/webroot/deploy/javascripts
+      echo "\n\n====================================\nDeployed public 'javascripts'\n====================================\n\n"
+      # scp -r deploy/stylesheets/* user@server:~/path/to/parent/of/webroot/deploy/stylesheets
+      echo "\n\n====================================\nDeployed public 'stylesheets'\n====================================\n\n"
+      echo "Successfully uploaded files to $1 server."
+    fi
+  elif [ $1 == "production" ]; then
+    if [ $2 = "config" ]; then
+      echo "\n\n====================================\n\nAre you sure you want to overwrite all the files in 'config' on the $1 server  [yes/no] ?\n\n====================================\n\n"
+      read ANSWER
+      if [ $ANSWER = "yes" ]; then
+        echo "\n\n====================================\nReplacing 'config' to $1 server...\n====================================\n\n"
+          # scp -r config user@server:~/path/to/parent/of/webroot/
+        echo "\n\n====================================\nOverwrote 'config'\n====================================\n\n"
+      fi
+    else
+      echo "\n\n====================================\nDeploying to $1 server...\n====================================\n\n"
+      # scp -r app/* user@server:~/path/to/parent/of/webroot/app
+      # scp -r deploy/lib/* user@server:~/path/to/parent/of/webroot/deploy/lib
+      echo "\n\n====================================\nDeployed 'app'\n====================================\n\n"
+      if [ $2 = "images" ]; then
+        # scp -r deploy/images/* user@server:~/path/to/parent/of/webroot/deploy/images
+        echo "\n\n====================================\nDeployed public 'images'\n====================================\n\n"
+      fi
+      # scp -r deploy/javascripts/* user@server:~/path/to/parent/of/webroot/deploy/javascripts
+      echo "\n\n====================================\nDeployed public 'javascripts'\n====================================\n\n"
+      # scp -r deploy/stylesheets/* user@server:~/path/to/parent/of/webroot/deploy/stylesheets
+      echo "\n\n====================================\nDeployed public 'stylesheets'\n====================================\n\n"
+      echo "\n\n====================================\nSuccessfully uploaded files to $1 server.\n====================================\n\n"
+    fi
+  else
+    echo "ERROR! type 'autopilot/deploy production' or 'autopilot/deploy staging'"
+  fi
+fi

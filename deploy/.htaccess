@@ -1,5 +1,12 @@
+# DirectoryIndex index.html
+Options -Indexes
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l
 RewriteRule ^.*$ - [NC,L]
 RewriteRule ^.*$ index.php [NC,L]
+ErrorDocument 500 /500.html
+ErrorDocument 502 /500.html
+ErrorDocument 503 /500.html
+ErrorDocument 504 /500.html
+ErrorDocument 404 /404.html

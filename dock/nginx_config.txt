@@ -1,0 +1,30 @@
+server {
+  listen 80;
+  server_name stealthycode.com;
+  root /var/www/stealthycode.com/deploy;
+
+  #try_files $uri $uri/ /index.php?q=$args;
+
+  location / {
+    index index.php index.html;
+    if (!-f $request_filename) {
+      rewrite  ^/admin/(.*).html$  /admin/$1.html  last;
+      #rewrite  ^(.*)$  /index.php?q=$1  last;
+      break;
+    }
+  }
+
+  error_page 500 502 503 504  /500.html;
+  error_page 404 /404.html;
+
+  location ~ /\.ht {
+      deny  all;
+  }
+
+  location ~ .php$ {
+    include fastcgi_params;
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME /var/www/stealthycode.com/deploy$fastcgi_script_name;
+  }   
+}

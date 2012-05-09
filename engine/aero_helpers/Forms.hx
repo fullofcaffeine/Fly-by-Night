@@ -372,6 +372,16 @@ class Forms extends AeroHelper
     return tag;
   }
   
+  public function image_picker( property_name:String, label:String, hint:String, val:String ):String
+  {
+    var out = label_val(property_name, label);
+    if(hint.length>0){
+      out += "<span id='hint_"+property_name+"' class='hint'>"+hint+"</span>";
+    }
+    out += "<div id='image_chooser_"+property_name+"' class='image_chooser' title='"+property_name+"'>"+text_field_val(property_name, val) + "<img class='choose_image' src='/images/click_to_choose_image.png' title='"+property_name+"' style='cursor:pointer'/></div>";
+    return out;
+  }
+  
   
   /* requires JQuery UI timepicker 
      http://trentrichardson.com/examples/timepicker/
