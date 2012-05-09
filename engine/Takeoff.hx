@@ -59,13 +59,11 @@ class Takeoff
       Node.fs.readFile(Settings.get("FBN_ROOT")+"config/application.yml", function(err, data){
 /*        if(err != null){ throw err; }*/
         FlyByNightMixins._APP_CONFIG = YamlHX.read(data);
-        enable_sessions();
       });
     #else
       FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
-      enable_sessions();
     #end
-    
+    enable_sessions();
     
     LandingGearMacro.stage();
 
