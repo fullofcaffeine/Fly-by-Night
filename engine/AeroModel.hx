@@ -158,14 +158,12 @@ class AeroModel extends php.db.Object
   private inline function runBeforeSave():Void
   {
     if(Reflect.hasField(this,"beforeSave")){
-      AeroLogger.log("has beforeSave, running filter");
       Reflect.callMethod(this, Reflect.field(this,"beforeSave"), []);
     }
   }
   private inline function runAfterSave():Void
   {
     if(Reflect.hasField(this,"afterSave")){
-      AeroLogger.log("has afterSave, running filter");
       Reflect.callMethod(this, Reflect.field(this,"afterSave"), []);
     }
   }
