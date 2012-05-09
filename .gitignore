@@ -1,7 +1,7 @@
 FlyByNight.tmproj
-deploy/*
-autopilot/engage.n
-autopilot/devise.n
-plot/ImportSchemes.hx
+deploy/lib
+/autopilot/engage.n
+/autopilot/devise.n
+/plot/ImportSchemes.hx
 engine/macros/ImportClasses.hx
 blackbox/*

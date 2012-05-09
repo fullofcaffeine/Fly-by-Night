@@ -84,6 +84,18 @@ class Forms extends AeroHelper
     
     return tag;
   }
+  public inline function textarea_field_tag_val( obj:String, attribute_name:String, val:String ):String
+  {
+    obj = Utils.to_underscore(obj);
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<textarea id='"+_id+"' name='"+_name+"' cols='40' rows='10'>"+Utils.strip_input_val(val)+"</textarea>";
+    
+    return tag;
+  }
   
   /*
    * options
@@ -213,6 +225,18 @@ class Forms extends AeroHelper
     return tag;
   }
   
+  public inline function checkbox_field_val( attribute_name:String, val:Int ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<input id='"+_id+"' name='"+_name+"' type='checkbox' "+((val==1)?"checked='checked'":"")+" />";
+    return tag;
+  }
+  
   public inline function file_field( attribute_name:String ):String
   {
     var obj = Utils.to_underscore(Utils.singularize(controller.name));
@@ -335,6 +359,48 @@ class Forms extends AeroHelper
     return tag;
   }
   
+  public inline function date_picker_val( attribute_name:String, val:Date, ?format:String = 'yy-mm-dd' ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+DateTools.format(val,FlyByNightMixins.APP_CONFIG(null,'common_date_format'))+"' />
+              <script type='text/javascript'>$(function(){ $('#"+_id+"').datepicker({dateFormat:'"+format+"'})});</script>";
+    return tag;
+  }
+  
+  
+  /* requires JQuery UI timepicker 
+     http://trentrichardson.com/examples/timepicker/
+  */
+  public inline function datetime_picker( attribute_name:String, ?format:String = 'yy-mm-dd', ?timeformat:String = 'hh:mm:ss', ?stepMinute:String = '5' ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<input id='"+_id+"' type='text' name='"+_name+"' />
+              <script type='text/javascript'>$(function(){ $('#"+_id+"').datetimepicker({dateFormat:'"+format+"', timeFormat: '"+timeformat+"', stepMinute: "+Std.parseInt(stepMinute)+"})});</script>";
+    return tag;
+  }
+  
+  public inline function datetime_picker_val( attribute_name:String, val:Date, ?format:String = 'yy-mm-dd', ?timeformat:String = 'hh:mm:ss', ?stepMinute:String = '5' ):String
+  {
+    var obj = Utils.to_underscore(Utils.singularize(controller.name));
+    var _id = obj+"_"+Utils.to_underscore(attribute_name);
+    var input_index = getInputIndex(obj);
+    var _name = obj+"["+input_index+"]";
+    
+    var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+DateTools.format(val,FlyByNightMixins.APP_CONFIG(null,'short_event_datetime'))+"' />
+              <script type='text/javascript'>$(function(){ $('#"+_id+"').datetimepicker({dateFormat:'"+format+"', timeFormat: '"+timeformat+"', stepMinute: "+Std.parseInt(stepMinute)+"})});</script>";
+    return tag;
+  }
   
   
 }
