@@ -6,4 +6,9 @@ class FlyByNightMixins
     return _APP_CONFIG.get(key);
   }
   
+  public static inline function inspect(obj:Dynamic, ?p : haxe.PosInfos ):Void{
+    // should do deeptrace
+    // AeroLogger.log(haxe.Stack.callStack()[haxe.Stack.callStack().length-1].FilePos + " : " + obj.toString());
+    AeroLogger.log(obj.toString(), p);
+  }
 }

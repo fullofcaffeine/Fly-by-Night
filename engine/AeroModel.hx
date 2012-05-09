@@ -15,7 +15,7 @@ class AeroModel extends php.db.Object
 {
 /*  public var name: String;*/
   public var id: Int;
-  public var manager: Dynamic;
+  public static var manager: Dynamic;
   public function new( )
   {
     DBConnection.connection;
@@ -30,6 +30,7 @@ class AeroModel extends php.db.Object
   {
     DBConnection.connection;
     
+    runBeforeSave();
     if(find(Type.getClass(this),this.id) == null){ // new record
       
       // magic columns
@@ -41,6 +42,7 @@ class AeroModel extends php.db.Object
       }
       
       this.insert();
+      
     }else{
       // magic columns
       if(Reflect.hasField(Type.getClass(this), "updated_at")){
@@ -49,6 +51,7 @@ class AeroModel extends php.db.Object
       
       this.update();
     }
+    runAfterSave();
     
     // TODO FIXME do checks, validations, etc.
     return true;
@@ -151,4 +154,19 @@ class AeroModel extends php.db.Object
     return fields_hash;
   }
   
+  
+  private inline function runBeforeSave():Void
+  {
+    if(Reflect.hasField(this,"beforeSave")){
+      AeroLogger.log("has beforeSave, running filter");
+      Reflect.callMethod(this, Reflect.field(this,"beforeSave"), []);
+    }
+  }
+  private inline function runAfterSave():Void
+  {
+    if(Reflect.hasField(this,"afterSave")){
+      AeroLogger.log("has afterSave, running filter");
+      Reflect.callMethod(this, Reflect.field(this,"afterSave"), []);
+    }
+  }
 }
