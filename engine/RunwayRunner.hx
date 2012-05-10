@@ -6,7 +6,6 @@ import haxe.unit.TestStatus;
 import neko.Lib;
 class RunwayRunner
 {
-  private static inline var DATE_FORMAT = "%B %d, %I:%M:%S %p";
   private var result : TestResult;
 	
   public function new()
@@ -16,7 +15,7 @@ class RunwayRunner
     
     result = new TestResult();
     
-    Lib.println("\n\n[--- Runway tests starting ---] ("+get_date()+")");
+    Lib.println("\n\n[--- Runway tests starting ---] ("+Utils.getDate()+")");
       
     #if engine
       Lib.println("\n\n[--- Running Engine Tests ---]");
@@ -63,7 +62,7 @@ class RunwayRunner
       Lib.println("\n\n[--- Application tests complete ---]");
     #end
     
-    Lib.println("\n\n[--- Runway tests complete ---] ("+get_date()+")");
+    Lib.println("\n\n[--- Runway tests complete ---] ("+Utils.getDate()+")");
     
     
 		Lib.println(result.toString());
@@ -79,10 +78,6 @@ class RunwayRunner
     var now = Timer.stamp();
     var time = Std.int((now-timer)*1000)/1000;
     return Std.string("("+time+" ms)");
-  }
-  private static inline function get_date(  ):String
-  {
-    return DateTools.format(Date.now(), DATE_FORMAT);
   }
   
   function runCase( t:TestCase ) : Void 	{

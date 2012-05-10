@@ -1,5 +1,6 @@
 class Utils
 {
+  private static inline var LOG_DATE_FORMAT = "%B %d, %I:%M:%S %p";
   public static inline var SUCCESS_CODES = [
   "The fox is in the hen house.",
   "The eagle left the nest.",
@@ -96,5 +97,9 @@ class Utils
   public static inline function timestamp(  ):String
   {
     return Date.now().toString().split(" ").join("").split("-").join("").split(":").join("");
+  }
+  public static inline function getDate( ?date_format:String ):String
+  {
+    return DateTools.format(Date.now(), (date_format==null)? LOG_DATE_FORMAT : date_format );
   }
 }
