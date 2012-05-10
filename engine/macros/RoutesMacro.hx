@@ -15,7 +15,7 @@ class RoutesMacro {
           if(e.hasNode.name)
             names.push(e.node.name.innerData);
         }else if(e.name == "rest"){
-          name = Std.string(Utils.singularize(e.innerData)).toLowerCase();
+          name = Std.string(Utils.singularize(Utils.to_underscore(e.innerData))).toLowerCase();
           names.push(Utils.pluralize(name));
           names.push(name);
           names.push("new_"+name);

@@ -139,8 +139,8 @@ class Route
           }
           
         }else if(e.name == "rest"){
-          if(pathMatchesRestfulRoute(path.split("/"),e.innerData.toLowerCase())){
-            route = mapToRestfulRoute(e.innerData.toLowerCase(), path, method, params);
+          if(pathMatchesRestfulRoute(path.split("/"),Utils.to_underscore(e.innerData).toLowerCase())){
+            route = mapToRestfulRoute(Utils.to_underscore(e.innerData).toLowerCase(), path, method, params);
             break;
           }
         }
