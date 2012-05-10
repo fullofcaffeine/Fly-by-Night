@@ -1,6 +1,7 @@
 import yaml_crate.YamlHX;
 import haxe.xml.Fast;
 import php.io.File;
+using AeroPath;
 class Route
 {
   public static var _routes_yml:YamlHX;
@@ -210,5 +211,42 @@ class Route
         Reflect.field(controller,route.action),
         [route.params]);
       return cast(controller, AeroController);*/
+	}
+	
+	/*
+	  use for adding route paths by enum name to haml templates
+	  ex: 
+	  controllers.Application.index(){
+	    content.set("Routes", Route.linksAsHash());
+	  }
+	  index.haml
+	  %a(href=Routes.root) Home
+	*/
+	public static function linksAsHash():Hash<String>
+	{
+	  var hash = new Hash<String>();
+    
+    var route_path:String;
+    var plural_route_path:String;
+    for (e in routes_yml.elements ){
+      route_path = "";
+      if(e.name == "map"){
+        hash.set(e.node.name.innerData, Std.string(e.node.uri.innerData)); // faster than AeroPath
+      }else if(e.name == "rest"){
+        plural_route_path = Utils.to_underscore(e.innerData).toLowerCase();
+        route_path = Utils.singularize(plural_route_path);
+        
+        hash.set(plural_route_path, AeroPath.path(Reflect.field(Routes, plural_route_path)));
+        hash.set("new_"+route_path, AeroPath.path(Reflect.field(Routes, "new_"+route_path)));
+        hash.set("create_"+route_path, AeroPath.path(Reflect.field(Routes, "create_"+route_path)));
+        // these require id param
+        // hash.set(route_path, AeroPath.path(Reflect.field(Routes, route_path)));
+        // hash.set("edit_"+route_path, AeroPath.path(Reflect.field(Routes, "edit_"+route_path)));
+        // hash.set("update_"+route_path, AeroPath.path(Reflect.field(Routes, "update_"+route_path)));
+        // hash.set("destroy_"+route_path, AeroPath.path(Reflect.field(Routes, "destroy_"+route_path)));
+      }
+      
+    }
+    return hash;
 	}
 }

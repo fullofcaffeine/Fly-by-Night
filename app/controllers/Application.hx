@@ -31,5 +31,6 @@ class Application extends AeroController
     var page = new Hash<Dynamic>();
     page.set("title", APP_CONFIG("site_title"));
     content.set("page", page);
+    content.set("Routes", Route.linksAsHash());
   }
 }
