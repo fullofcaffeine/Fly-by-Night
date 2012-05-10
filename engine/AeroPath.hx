@@ -35,7 +35,7 @@ class AeroPath
   	        throw "Route named '"+name+"' does not have a uri set in ./config/routes.yml";
   	      }
   	    }else if(e.name == "rest"){ // look in restful routes
-  	      var resource_name = Utils.singularize(e.innerData.toLowerCase());
+  	      var resource_name = Utils.singularize(Utils.to_underscore(e.innerData).toLowerCase());
           var id = (params != null && params.exists("id"))? params.get("id") : null;
           if(name == Utils.pluralize(resource_name)){ // index
   	        uri = "/"+Utils.pluralize(resource_name);
