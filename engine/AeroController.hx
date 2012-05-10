@@ -16,6 +16,9 @@ class AeroController
   public var obj_params: Hash<String>;
   public var route: Route;
   
+  // set 'layout' to change default layout for this controller 
+  public static var layout = "application";
+  
   public function new( action:String, params:Hash<String>, ?route:Route = null )
   {
     this.route = route;

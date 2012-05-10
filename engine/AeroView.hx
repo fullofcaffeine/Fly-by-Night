@@ -58,7 +58,12 @@ class AeroView
     var layout_filename, template_filename = "";
     if(!rendered){
       if(custom_layout == null){
-        layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+type_ext;
+        if( Reflect.hasField(Type.getClass(controller), "layout" ) ){
+          layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Reflect.field(Type.getClass(controller), "layout" )+type_ext;
+        } else{
+          layout_filename = Settings.get("FBN_ROOT")+"app/views/layouts/"+Utils.to_underscore(controller.name)+type_ext;
+        }
+        
         if(FileSystem.exists(layout_filename)){
           layout = File.getContent(layout_filename);
         }else{
