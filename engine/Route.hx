@@ -148,6 +148,18 @@ class Route
         
       }
       
+      // check if catchall is set
+      if(route == null){
+        if(routes_yml.hasNode.catchall){
+          var catchall_params = new Hash<String>();
+          if(params!=null){
+            catchall_params = params;
+          }
+          catchall_params.set("_permalink", path);
+          route = new Route("catchall", path, null, routes_yml.node.catchall.node.controller.innerData, routes_yml.node.catchall.node.action.innerData, HTTPVerb.GET, catchall_params);
+        }
+      }
+      
       // else use default
       if(route == null){
         //route = routes_yml.node.default_route.innerData;
@@ -220,7 +232,7 @@ class Route
 	    content.set("Routes", Route.linksAsHash());
 	  }
 	  index.haml
-	  %a(href=Routes.root) Home
+	  a(href=Routes.root) Home
 	*/
 	public static function linksAsHash():Hash<String>
 	{
