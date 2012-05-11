@@ -167,7 +167,6 @@ class AeroModel extends php.db.Object
       Reflect.callMethod(this, Reflect.field(this,"afterSave"), []);
     }
   }
-  
   private static inline function runAfterFind(result:Dynamic):Void
   {
     if(Reflect.hasField(result,"afterFind")){
