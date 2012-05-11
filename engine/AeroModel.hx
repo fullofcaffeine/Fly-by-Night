@@ -15,7 +15,7 @@ class AeroModel extends php.db.Object
 {
 /*  public var name: String;*/
   public var id: Int;
-  public var manager: Dynamic;
+  public static var manager: Dynamic;
   public function new( )
   {
     DBConnection.connection;
@@ -30,6 +30,7 @@ class AeroModel extends php.db.Object
   {
     DBConnection.connection;
     
+    runBeforeSave();
     if(find(Type.getClass(this),this.id) == null){ // new record
       
       // magic columns
@@ -41,6 +42,7 @@ class AeroModel extends php.db.Object
       }
       
       this.insert();
+      
     }else{
       // magic columns
       if(Reflect.hasField(Type.getClass(this), "updated_at")){
@@ -49,6 +51,7 @@ class AeroModel extends php.db.Object
       
       this.update();
     }
+    runAfterSave();
     
     // TODO FIXME do checks, validations, etc.
     return true;
@@ -92,10 +95,10 @@ class AeroModel extends php.db.Object
     var class_name = Type.getClassName(model);
     var result:Object = null;
     if(Type.getSuperClass(model) == AeroModel){
-      
       var manager = new Manager(cast Type.resolveClass(class_name));
       result = manager.get(id);
 /*      result = manager.objects("SELECT * FROM posts", false);*/
+      runAfterFind(result);
     }
     return result;
   }
@@ -151,4 +154,24 @@ class AeroModel extends php.db.Object
     return fields_hash;
   }
   
+  
+  private inline function runBeforeSave():Void
+  {
+    if(Reflect.hasField(this,"beforeSave")){
+      Reflect.callMethod(this, Reflect.field(this,"beforeSave"), []);
+    }
+  }
+  private inline function runAfterSave():Void
+  {
+    if(Reflect.hasField(this,"afterSave")){
+      Reflect.callMethod(this, Reflect.field(this,"afterSave"), []);
+    }
+  }
+  
+  private static inline function runAfterFind(result:Dynamic):Void
+  {
+    if(Reflect.hasField(result,"afterFind")){
+      Reflect.callMethod(result, Reflect.field(result,"afterFind"), []);
+    }
+  }
 }
