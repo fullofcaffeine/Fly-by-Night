@@ -66,9 +66,9 @@ class Takeoff
 			case "GET" : HTTPVerb.GET;
 			case "POST" :
 			  if(params.exists("_method")){
-			    if(params.get("_method") == "DELETE"){
+			    if(params.get("_method").toUpperCase() == "DELETE"){
 			      HTTPVerb.DELETE;
-		      }else if(params.get("_method") == "PUT"){
+		      }else if(params.get("_method").toUpperCase() == "PUT"){
 		        HTTPVerb.PUT;
 		      }
 			  }else{
