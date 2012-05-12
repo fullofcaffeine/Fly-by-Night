@@ -15,12 +15,14 @@ class AeroModel extends php.db.Object
 {
 /*  public var name: String;*/
   public var id: Int;
-  public static var manager: Dynamic;
+  
+  // use the class static manager instead
+  // public static var manager: Dynamic;
   public function new( )
   {
     DBConnection.connection;
-/*    name = Type.getClassName(Type.getClass(this)).substr(8); // models.*/
-    manager = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
+    // name = Type.getClassName(Type.getClass(this)).substr(8); // models.
+    // manager = new Manager(cast Type.resolveClass(Type.getClassName(Type.getClass(this))));
     
     super();
       
@@ -167,6 +169,7 @@ class AeroModel extends php.db.Object
       Reflect.callMethod(this, Reflect.field(this,"afterSave"), []);
     }
   }
+  
   private static inline function runAfterFind(result:Dynamic):Void
   {
     if(Reflect.hasField(result,"afterFind")){
