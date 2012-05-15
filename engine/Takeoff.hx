@@ -41,6 +41,7 @@ class Takeoff
     // read application config
     FlyByNightMixins._APP_CONFIG = YamlHX.read(File.getContent(Settings.get("FBN_ROOT")+"config/application.yml"));
     
+    // enable sessions
     if(FlyByNightMixins._APP_CONFIG != null){
       Settings.set("FBN_SESSION_ENABLE", FlyByNightMixins.APP_CONFIG(null, "session.enable"));
       if(Settings.get("FBN_SESSION_ENABLE") == "true"){
@@ -49,6 +50,10 @@ class Takeoff
         Session.start();
       }
     }
+    
+    // build CONFIG from all config files in /config directory
+    FlyByNightMixins._CONFIG = buildConfigYamlHX();
+    
     
 		// route request to AeroController, AeroRestController handles the REST
 		
@@ -122,4 +127,32 @@ class Takeoff
       Session.close();
     }
 	}
+	
+	private static inline function buildConfigYamlHX():YamlHX
+	{
+	  // build CONFIG from all config files in config/ directory
+	  // skip routes and database
+	  var all_configs = "";
+	  
+	  // get dir contents
+	  var files = sys.FileSystem.readDirectory(Settings.get("FBN_ROOT")+"config/");
+	  var config_name:String;
+	  var lines:String;
+	  for(file in files){
+	    if(file != "routes.yml" && file != "database.yml"){
+	      config_name = file.substr(0,file.lastIndexOf(".yml"));
+  	    all_configs += config_name+":\n";
+
+  	    // indent each line in by 2 spaces
+  	    lines = File.getContent(Settings.get("FBN_ROOT")+"config/"+file);
+  	    for(line in lines.split("\n")){
+  	      all_configs += "  "+line+'\n';
+  	    }
+  	    all_configs += "\n\n";
+	    }
+	  }
+	  
+	  return YamlHX.read(all_configs);
+	}
+	  
 }
