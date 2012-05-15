@@ -19,27 +19,27 @@ class Forms extends AeroHelper
   {
     var _id = Utils.to_underscore(Utils.singularize(controller.name)+" "+attribute_name);
     attribute_name = Utils.titleize(attribute_name); 
-    return "<label id='label_for_"+_id+"' for='"+_id+"'>"+attribute_name+"</label>";
+    return "<label id='label_for_"+_id+"' class='control-label' for='"+_id+"'>"+attribute_name+"</label>";
   }
   public inline function label_val( attribute_name:String, val:String ):String
   {
     var _id = Utils.to_underscore(Utils.singularize(controller.name)+" "+attribute_name);
     attribute_name = (val!=null)? val : Utils.titleize(attribute_name); 
-    return "<label id='label_for_"+_id+"' for='"+_id+"'>"+attribute_name+"</label>";
+    return "<label id='label_for_"+_id+"' class='control-label' for='"+_id+"'>"+attribute_name+"</label>";
   }
   public inline function label_tag( obj:String, attribute_name:String ):String
   {
     var _id = Utils.to_underscore(obj+" "+attribute_name);
     attribute_name = Utils.titleize(attribute_name); 
-    return "<label id='label_for_"+_id+"' for='"+_id+"'>"+attribute_name+"</label>";
+    return "<label id='label_for_"+_id+"' class='control-label' for='"+_id+"'>"+attribute_name+"</label>";
   }
   public inline function label_tag_val( obj:String, attribute_name:String, val:String ):String
   {
     var _id = Utils.to_underscore(obj+" "+attribute_name);
     attribute_name = (val!=null)? val : Utils.titleize(attribute_name); 
-    return "<label id='label_for_"+_id+"' for='"+_id+"'>"+attribute_name+"</label>";
+    return "<label id='label_for_"+_id+"' class='control-label' for='"+_id+"'>"+attribute_name+"</label>";
   }
-  public inline function text_field_tag( obj:String, attribute_name:String ):String
+  public inline function text_field_tag( obj:String, attribute_name:String, ?extra_attributes:String="" ):String
   {
     obj = Utils.to_underscore(obj);
     var _id = obj+"_"+Utils.to_underscore(attribute_name);
@@ -47,10 +47,10 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' />";
+              "<input id='"+_id+"' type='text' name='"+_name+"' "+extra_attributes+" />";
     return tag;
   }
-  public inline function text_field_tag_val( obj:String, attribute_name:String, val:String ):String
+  public inline function text_field_tag_val( obj:String, attribute_name:String, val:String, ?extra_attributes:String="" ):String
   {
     obj = Utils.to_underscore(obj);
     var _id = obj+"_"+Utils.to_underscore(attribute_name);
@@ -58,7 +58,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' "+extra_attributes+" />";
     return tag;
   }
   public inline function password_field_tag( obj:String, attribute_name:String, val:String ):String
@@ -154,7 +154,7 @@ class Forms extends AeroHelper
   /*
   * Uses controller object name as the object
   */
-  public inline function text_field( attribute_name:String ):String
+  public inline function text_field( attribute_name:String, ?extra_attributes:String="" ):String
   {
     var obj = Utils.to_underscore(Utils.singularize(controller.name));
     var _id = obj+"_"+Utils.to_underscore(attribute_name);
@@ -162,11 +162,11 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' />";
+              "<input id='"+_id+"' type='text' name='"+_name+"' "+extra_attributes+" />";
     return tag;
   }
   
-  public inline function text_field_val( attribute_name:String, val:String ):String
+  public inline function text_field_val( attribute_name:String, val:String, ?extra_attributes:String="" ):String
   {
     var obj = Utils.to_underscore(Utils.singularize(controller.name));
     var _id = obj+"_"+Utils.to_underscore(attribute_name);
@@ -174,7 +174,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' />";
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+Utils.strip_input_val(val)+"' "+extra_attributes+" />";
     return tag;
   }
   
@@ -367,7 +367,7 @@ class Forms extends AeroHelper
     var _name = obj+"["+input_index+"]";
     
     var tag = "<input id='"+obj+"_keys_"+input_index+"' type='hidden' name='"+obj+"_keys["+input_index+"]' value='"+attribute_name+"' />"+
-              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+DateTools.format(val,FlyByNightMixins.APP_CONFIG(null,'common_date_format'))+"' />
+              "<input id='"+_id+"' type='text' name='"+_name+"' value='"+((val==null)?"":DateTools.format(val,FlyByNightMixins.APP_CONFIG(null,'common_date_format')))+"' />
               <script type='text/javascript'>$(function(){ $('#"+_id+"').datepicker({dateFormat:'"+format+"'})});</script>";
     return tag;
   }
