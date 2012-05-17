@@ -58,8 +58,6 @@ class Takeoff
 		// route request to AeroController, AeroRestController handles the REST
 		
 		
-		// Build/ Instantiate a Request object
-		
 		headers = php.Web.getClientHeaders();
 		path = php.Web.getURI();
 		params = php.Web.getParams();
@@ -94,8 +92,7 @@ class Takeoff
     ImportClassesMacro.write();
     macros.ImportClasses;
   
-  
-/*    throw(path);*/
+    
     
     controller = Route.resolve(path, method, params);
     if(controller.view != null) controller.view.render();

@@ -33,6 +33,8 @@ class Route
 		this.via = via;
     this.params = (params != null)? params : new Hash<String>();
     processParams();
+    
+    AeroLogger.log(this);
 	}
 	
 	/*public inline function getURIfromName( name:String, params:Hash<String> ):String
@@ -79,6 +81,16 @@ class Route
 	  var request_segments = this.request_uri.split("/");
 	  var path_segments = this.path.split("/");
 	  for(i in 0...path_segments.length){
+	    if(StringTools.startsWith(path_segments[i], ":")){
+	      params.set(path_segments[i].substr(1), request_segments[i]);
+	    }
+	  }
+	  
+	  // split periods too, for :id.:format
+	  request_segments = this.request_uri.split(".");
+	  path_segments = this.path.split(".");
+	  for(i in 0...path_segments.length){
+	    AeroLogger.log(path_segments[i]);
 	    if(StringTools.startsWith(path_segments[i], ":")){
 	      params.set(path_segments[i].substr(1), request_segments[i]);
 	    }
@@ -132,7 +144,7 @@ class Route
           }
         }
         if(e.name == "map"){
-          if(pathMatchesRoute(path.split("/"),route_path.split("/"))){
+          if(pathMatchesRoute(path,route_path)){
             if(e.hasNode.via && e.node.via.innerData == Std.string(method)){
               route = mapToRoute(e, path, method, params);
               break;
@@ -169,14 +181,27 @@ class Route
     }
 	}
 	
-	private static function pathMatchesRoute( request_uri_segments:Array<String>, path_segments:Array<String> ):Bool
+	private static function pathMatchesRoute( request_uri:String, path:String ):Bool
 	{
 	  // var r : EReg = ~/[:(a-zA-Z0-9_)+]/;
-	  if(request_uri_segments.length != path_segments.length) return false;
+	  var request_uri_segments = request_uri.split("/");
+	  var path_segments = path.split("/");
+	  var format_request_segments:Array<String>;
+    var format_path_segments:Array<String>;
+	  // if(request_uri_segments.length != path_segments.length) return false;
 	  for(i in 0...request_uri_segments.length){
+	    // "/blog.:format/:id"
 	    if(!StringTools.startsWith(path_segments[i], ":")){
 	      if(path_segments[i] != request_uri_segments[i]){
-	        return false;
+	        // check if there's a period
+	        format_request_segments = request_uri_segments[i].split(".");
+	        format_path_segments = path_segments[i].split(".");
+	        for(j in 0...format_request_segments.length){
+	          if(format_path_segments[i] != format_request_segments[i]){
+	            return false;
+	          }
+	        }
+	        // return false;
 	      }
 	    }
 	  }
@@ -242,7 +267,8 @@ class Route
     var plural_route_path:String;
     for (e in routes_yml.elements ){
       route_path = "";
-      if(e.name == "map"){
+      // if no uri: is set, will skip it, which is ok in most cases
+      if(e.name == "map" && e.hasNode.uri){
         hash.set(e.node.name.innerData, Std.string(e.node.uri.innerData)); // faster than AeroPath
       }else if(e.name == "rest"){
         plural_route_path = Utils.to_underscore(e.innerData).toLowerCase();
@@ -261,4 +287,4 @@ class Route
     }
     return hash;
 	}
-}
+}s
