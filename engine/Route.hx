@@ -188,20 +188,27 @@ class Route
 	  var path_segments = path.split("/");
 	  var format_request_segments:Array<String>;
     var format_path_segments:Array<String>;
-	  // if(request_uri_segments.length != path_segments.length) return false;
+    if(request_uri_segments.length != path_segments.length) return false;
 	  for(i in 0...request_uri_segments.length){
 	    // "/blog.:format/:id"
 	    if(!StringTools.startsWith(path_segments[i], ":")){
 	      if(path_segments[i] != request_uri_segments[i]){
+	        
 	        // check if there's a period
-	        format_request_segments = request_uri_segments[i].split(".");
-	        format_path_segments = path_segments[i].split(".");
-	        for(j in 0...format_request_segments.length){
-	          if(format_path_segments[i] != format_request_segments[i]){
-	            return false;
-	          }
-	        }
-	        // return false;
+	        if(request_uri_segments[i].indexOf(".")>0){
+  	        format_request_segments = request_uri_segments[i].split(".");
+  	        format_path_segments = path_segments[i].split(".");
+  	        var format_matches = true;
+  	        for(j in 0...format_request_segments.length){
+  	          if(format_path_segments[i] != format_request_segments[i]){
+  	            format_matches = false;
+  	          }
+  	        }
+            return format_matches;
+          }else{
+            return false;
+          }
+          
 	      }
 	    }
 	  }
@@ -287,4 +294,4 @@ class Route
     }
     return hash;
 	}
-}s
+}
