@@ -27,6 +27,34 @@ class AeroModel extends php.db.Object
     super();
       
   }
+  
+  public static inline function find_or_create( model:Dynamic, attributes:Hash<Dynamic> ):Dynamic
+  {
+    // var obj = find(Type.getClass(model),this.id);
+    DBConnection.connection;
+    
+    var class_name = Type.getClassName(model);
+    var obj:Object = null;
+    if(Type.getSuperClass(model) == AeroModel){
+      var manager = new Manager(cast Type.resolveClass(class_name));
+      var conditions = [];
+      for(key in attributes.keys()){
+        conditions.push(key+" = "+manager.quote(attributes.get(key)));
+      }
+      obj = manager.result("SELECT * FROM "+Reflect.field(Type.resolveClass(class_name), "TABLE_NAME")+" WHERE "+conditions.join(" AND ")+" LIMIT 1");
+/*      result = manager.objects("SELECT * FROM posts", false);*/
+      runAfterFind(obj);
+    }
+    
+    if(obj == null){
+      obj = Type.createInstance(Type.resolveClass(Type.getClassName(model)),[]);
+      for(key in attributes.keys()){
+        Reflect.setField(obj, key, attributes.get(key));
+      }
+      Reflect.callMethod(obj,"save",[]);
+    }
+    return obj;
+  }
 
   public function save( ):Bool
   {
